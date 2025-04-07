@@ -4,7 +4,7 @@ import { Input } from './c-input'
 import { FormError } from './form-error'
 import { ActionState } from './types'
 
-export function FormField({
+export function FormInput({
 	className,
 	clearOnError = false,
 	id: _id,
