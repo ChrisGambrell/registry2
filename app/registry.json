@@ -1,0 +1,80 @@
+{
+	"name": "base",
+	"type": "registry:block",
+	"dependencies": [
+		"@radix-ui/react-alert-dialog",
+		"@radix-ui/react-checkbox",
+		"@radix-ui/react-label",
+		"@radix-ui/react-slot",
+		"next-themes",
+		"sonner",
+		"zod"
+	],
+	"registryDependencies": ["alert-dialog", "button", "checkbox", "input", "label", "sonner"],
+	"files": [
+		{
+			"path": "./app/globals.css",
+			"content": "@import 'tailwindcss';\n@import 'tw-animate-css';\n\n@custom-variant dark (&:is(.dark *));\n\n@theme inline {\n\t--color-background: var(--background);\n\t--color-foreground: var(--foreground);\n\t--font-sans: var(--font-geist-sans);\n\t--font-mono: var(--font-geist-mono);\n\t--color-sidebar-ring: var(--sidebar-ring);\n\t--color-sidebar-border: var(--sidebar-border);\n\t--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);\n\t--color-sidebar-accent: var(--sidebar-accent);\n\t--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);\n\t--color-sidebar-primary: var(--sidebar-primary);\n\t--color-sidebar-foreground: var(--sidebar-foreground);\n\t--color-sidebar: var(--sidebar);\n\t--color-chart-5: var(--chart-5);\n\t--color-chart-4: var(--chart-4);\n\t--color-chart-3: var(--chart-3);\n\t--color-chart-2: var(--chart-2);\n\t--color-chart-1: var(--chart-1);\n\t--color-ring: var(--ring);\n\t--color-input: var(--input);\n\t--color-border: var(--border);\n\t--color-destructive: var(--destructive);\n\t--color-accent-foreground: var(--accent-foreground);\n\t--color-accent: var(--accent);\n\t--color-muted-foreground: var(--muted-foreground);\n\t--color-muted: var(--muted);\n\t--color-secondary-foreground: var(--secondary-foreground);\n\t--color-secondary: var(--secondary);\n\t--color-primary-foreground: var(--primary-foreground);\n\t--color-primary: var(--primary);\n\t--color-popover-foreground: var(--popover-foreground);\n\t--color-popover: var(--popover);\n\t--color-card-foreground: var(--card-foreground);\n\t--color-card: var(--card);\n\t--radius-sm: calc(var(--radius) - 4px);\n\t--radius-md: calc(var(--radius) - 2px);\n\t--radius-lg: var(--radius);\n\t--radius-xl: calc(var(--radius) + 4px);\n}\n\n:root {\n\t--radius: 0.625rem;\n\t--background: oklch(1 0 0);\n\t--foreground: oklch(0.145 0 0);\n\t--card: oklch(1 0 0);\n\t--card-foreground: oklch(0.145 0 0);\n\t--popover: oklch(1 0 0);\n\t--popover-foreground: oklch(0.145 0 0);\n\t--primary: oklch(0.205 0 0);\n\t--primary-foreground: oklch(0.985 0 0);\n\t--secondary: oklch(0.97 0 0);\n\t--secondary-foreground: oklch(0.205 0 0);\n\t--muted: oklch(0.97 0 0);\n\t--muted-foreground: oklch(0.556 0 0);\n\t--accent: oklch(0.97 0 0);\n\t--accent-foreground: oklch(0.205 0 0);\n\t--destructive: oklch(0.577 0.245 27.325);\n\t--border: oklch(0.922 0 0);\n\t--input: oklch(0.922 0 0);\n\t--ring: oklch(0.708 0 0);\n\t--chart-1: oklch(0.646 0.222 41.116);\n\t--chart-2: oklch(0.6 0.118 184.704);\n\t--chart-3: oklch(0.398 0.07 227.392);\n\t--chart-4: oklch(0.828 0.189 84.429);\n\t--chart-5: oklch(0.769 0.188 70.08);\n\t--sidebar: oklch(0.985 0 0);\n\t--sidebar-foreground: oklch(0.145 0 0);\n\t--sidebar-primary: oklch(0.205 0 0);\n\t--sidebar-primary-foreground: oklch(0.985 0 0);\n\t--sidebar-accent: oklch(0.97 0 0);\n\t--sidebar-accent-foreground: oklch(0.205 0 0);\n\t--sidebar-border: oklch(0.922 0 0);\n\t--sidebar-ring: oklch(0.708 0 0);\n}\n\n.dark {\n\t--background: oklch(0.145 0 0);\n\t--foreground: oklch(0.985 0 0);\n\t--card: oklch(0.205 0 0);\n\t--card-foreground: oklch(0.985 0 0);\n\t--popover: oklch(0.205 0 0);\n\t--popover-foreground: oklch(0.985 0 0);\n\t--primary: oklch(0.922 0 0);\n\t--primary-foreground: oklch(0.205 0 0);\n\t--secondary: oklch(0.269 0 0);\n\t--secondary-foreground: oklch(0.985 0 0);\n\t--muted: oklch(0.269 0 0);\n\t--muted-foreground: oklch(0.708 0 0);\n\t--accent: oklch(0.269 0 0);\n\t--accent-foreground: oklch(0.985 0 0);\n\t--destructive: oklch(0.704 0.191 22.216);\n\t--border: oklch(1 0 0 / 10%);\n\t--input: oklch(1 0 0 / 15%);\n\t--ring: oklch(0.556 0 0);\n\t--chart-1: oklch(0.488 0.243 264.376);\n\t--chart-2: oklch(0.696 0.17 162.48);\n\t--chart-3: oklch(0.769 0.188 70.08);\n\t--chart-4: oklch(0.627 0.265 303.9);\n\t--chart-5: oklch(0.645 0.246 16.439);\n\t--sidebar: oklch(0.205 0 0);\n\t--sidebar-foreground: oklch(0.985 0 0);\n\t--sidebar-primary: oklch(0.488 0.243 264.376);\n\t--sidebar-primary-foreground: oklch(0.985 0 0);\n\t--sidebar-accent: oklch(0.269 0 0);\n\t--sidebar-accent-foreground: oklch(0.985 0 0);\n\t--sidebar-border: oklch(1 0 0 / 10%);\n\t--sidebar-ring: oklch(0.556 0 0);\n}\n\n@layer base {\n\t* {\n\t\t@apply border-border outline-ring/50;\n\t}\n\tbody {\n\t\t@apply bg-background text-foreground;\n\t}\n}\n",
+			"type": "registry:example",
+			"target": "./app/globals.css"
+		},
+		{
+			"path": "./components/ui/f/action-button.tsx",
+			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { Loader2 } from 'lucide-react'\nimport { useFormStatus } from 'react-dom'\nimport { Button, ButtonProps } from './c-button'\n\nexport function ActionButton({ children, className, disabled, loading, ...props }: ButtonProps & { loading?: boolean }) {\n\tconst { pending } = useFormStatus()\n\n\treturn (\n\t\t<Button className={cn('relative', className)} disabled={disabled || loading || pending} type='submit' {...props}>\n\t\t\t<span className={cn('flex items-center gap-2', { invisible: loading || pending })}>{children}</span>\n\t\t\t{(loading || pending) && (\n\t\t\t\t<div className='absolute m-auto'>\n\t\t\t\t\t<Loader2 className='size-5 animate-spin' />\n\t\t\t\t</div>\n\t\t\t)}\n\t\t</Button>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/action.ts",
+			"content": "'use server'\n\nimport { ZodSchema } from 'zod'\nimport { ActionResult, OnValidResult } from './types'\n\nexport async function handleFormAction<T extends Record<string, unknown>>(\n\tformData: FormData,\n\tschema: ZodSchema<T>,\n\tonValid: (data: T) => Promise<OnValidResult<T>>\n): Promise<ActionResult<T>> {\n\tconst raw: Record<string, unknown> = {}\n\tfor (const [key, value] of formData.entries()) {\n\t\traw[key] = value === 'on' ? true : value\n\t}\n\n\tconst parsed = schema.safeParse(raw)\n\tif (!parsed.success) {\n\t\tconst fieldErrors = parsed.error.flatten().fieldErrors as Partial<Record<keyof T, string[]>>\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors,\n\t\t\tglobalError: null,\n\t\t\tvalues: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,\n\t\t}\n\t}\n\n\tconst result = await onValid(parsed.data)\n\n\tif (result?.fieldErrors || result?.globalError) {\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors: result.fieldErrors ?? {},\n\t\t\tglobalError: result.globalError ?? null,\n\t\t\tvalues: Object.fromEntries(Object.entries(parsed.data).map(([k, v]) => [k, String(v ?? '')])) as Partial<\n\t\t\t\tRecord<keyof T, string>\n\t\t\t>,\n\t\t}\n\t}\n\n\treturn {\n\t\tsuccess: true,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t}\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/c-button.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { VariantProps } from 'class-variance-authority'\nimport { Button as ButtonBase, buttonVariants } from '../button'\n\nexport type ButtonProps = React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }\n\nexport function Button({ className, ...props }: ButtonProps) {\n\treturn <ButtonBase className={cn('cursor-pointer', className)} {...props} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/c-input.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Input as InputBase } from '../input'\n\nexport function Input({ className, ...props }: React.ComponentProps<'input'>) {\n\treturn <InputBase className={cn('focus-visible:ring', className)} {...props} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/confirm.tsx",
+			"content": "'use client'\n\nimport { ReactNode, useActionState, useEffect, useState } from 'react'\nimport {\n\tAlertDialog,\n\tAlertDialogCancel,\n\tAlertDialogContent,\n\tAlertDialogDescription,\n\tAlertDialogFooter,\n\tAlertDialogHeader,\n\tAlertDialogTitle,\n\tAlertDialogTrigger,\n} from '../alert-dialog'\nimport { ActionButton } from './action-button'\n\nexport function Confirm({\n\taction: _action,\n\tchildren,\n\tdesc,\n\ttitle,\n\tvariant = 'default',\n}: {\n\taction: () => Promise<unknown>\n\tchildren: ReactNode\n\tdesc: string\n\ttitle: string\n\tvariant?: 'default' | 'destructive'\n}) {\n\tconst [open, setOpen] = useState(false)\n\tconst [state, action] = useActionState(_action, null)\n\n\tuseEffect(() => {\n\t\tif (state === undefined) setOpen(false)\n\t}, [state])\n\n\treturn (\n\t\t<AlertDialog open={open} onOpenChange={setOpen}>\n\t\t\t<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>\n\t\t\t<AlertDialogContent>\n\t\t\t\t<AlertDialogHeader>\n\t\t\t\t\t<AlertDialogTitle>{title}</AlertDialogTitle>\n\t\t\t\t\t<AlertDialogDescription>{desc}</AlertDialogDescription>\n\t\t\t\t</AlertDialogHeader>\n\t\t\t\t<AlertDialogFooter>\n\t\t\t\t\t<AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>\n\t\t\t\t\t<form action={action}>\n\t\t\t\t\t\t<ActionButton variant={variant}>Continue</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</AlertDialogFooter>\n\t\t\t</AlertDialogContent>\n\t\t</AlertDialog>\n\t)\n}\n\nexport function ConfirmDelete({ action, children }: { action: () => Promise<unknown>; children: ReactNode }) {\n\treturn (\n\t\t<Confirm\n\t\t\taction={action}\n\t\t\ttitle='Are you absolutely sure?'\n\t\t\tdesc='This action cannot be undone. This will permanently delete this item and remove the data from our servers.'\n\t\t\tvariant='destructive'>\n\t\t\t{children}\n\t\t</Confirm>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/form-checkbox.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Checkbox } from '../checkbox'\nimport { Label } from '../label'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormCheckbox({\n\tclassName,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<typeof Checkbox> & { label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t<div className='flex items-center gap-2'>\n\t\t\t\t<Checkbox id={id} name={id} {...props} />\n\t\t\t\t<Label htmlFor={id}>{label}</Label>\n\t\t\t</div>\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/form-error.tsx",
+			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { useEffect } from 'react'\nimport { useFormStatus } from 'react-dom'\nimport { toast } from 'sonner'\n\nexport function FormError({ hidden = false, value }: { hidden?: boolean; value: string[] | undefined }) {\n\tconst { pending } = useFormStatus()\n\n\tuseEffect(() => {\n\t\tif (!hidden) return\n\t\tif (value?.length && value.length > 0) toast.error(`FATAL: ${value[0]}`)\n\t}, [hidden, value])\n\n\tif (hidden || !value || !value.length) return null\n\treturn <div className={cn('text-sm text-destructive', { hidden: pending })}>{value[0]}</div>\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/form-input.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Input } from './c-input'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormField({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Input id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/global-toaster.tsx",
+			"content": "'use client'\n\nimport { usePathname, useRouter, useSearchParams } from 'next/navigation'\nimport { useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { Toaster } from '../sonner'\n\nexport function GlobalToaster() {\n\tconst pathname = usePathname()\n\tconst router = useRouter()\n\tconst searchParams = useSearchParams()\n\n\tuseEffect(() => {\n\t\tconst message = searchParams.get('message')\n\t\tconst error = searchParams.get('error')\n\t\tconst success = searchParams.get('success')\n\n\t\tif (!message && !error && !success) return\n\t\tconst toastType = message ? toast : success ? toast.success : toast.error\n\t\ttoastType(message ? message : success ? success : error)\n\n\t\tconst newSearchParams = new URLSearchParams(searchParams.toString())\n\t\tconst paramsToRemove = ['message', 'error', 'success']\n\t\tparamsToRemove.forEach((param) => newSearchParams.delete(param))\n\t\tconst redirectPath = `${pathname}?${newSearchParams.toString()}`\n\t\trouter.replace(redirectPath, { scroll: false })\n\t}, [pathname, router, searchParams])\n\n\treturn <Toaster position='top-center' richColors />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/types.ts",
+			"content": "export type ActionResult<T> = {\n\tsuccess: boolean\n\tfieldErrors: Partial<Record<keyof T, string[]>>\n\tglobalError: string | null\n\tvalues: Partial<Record<keyof T, string>>\n}\n\nexport type ActionState = {\n\tvalues: Record<string, string>\n\tfieldErrors: Record<string, string[]>\n\tglobalError: string | null\n\tsuccess: boolean\n}\n\nexport type OnValidResult<T> = null | {\n\tglobalError?: string\n\tfieldErrors?: Partial<Record<keyof T, string[]>>\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/f/use-form.tsx",
+			"content": "'use client'\n\nimport { useActionState, useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { ActionResult } from './types'\n\nexport function useForm<T>(action: (_: unknown, formData: FormData) => Promise<ActionResult<T>>) {\n\tconst [formState, formAction] = useActionState(action, {\n\t\tsuccess: false,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t})\n\n\tuseEffect(() => {\n\t\tif (!formState.globalError) return\n\t\ttoast.error(formState.globalError)\n\t}, [formState.globalError])\n\n\treturn [formState, formAction] as const\n}\n",
+			"type": "registry:ui"
+		}
+	],
+	"tailwind": {},
+	"cssVars": {},
+	"meta": {}
+}
