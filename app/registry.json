@@ -84,7 +84,7 @@
 		},
 		{
 			"path": "./components/ui/base/types.ts",
-			"content": "export type ActionResult<T> = {\n\tsuccess: boolean\n\tfieldErrors: Partial<Record<keyof T, string[]>>\n\tglobalError: string | null\n\tvalues: Partial<Record<keyof T, string>>\n}\n\nexport type ActionState = {\n\tvalues: Record<string, string>\n\tfieldErrors: Record<string, string[]>\n\tglobalError: string | null\n\tsuccess: boolean\n}\n\nexport type OnValidResult<T> = null | {\n\tglobalError?: string\n\tfieldErrors?: Partial<Record<keyof T, string[]>>\n}\n",
+			"content": "export type Params = Promise<{ [key: string]: string }>\nexport type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>\nexport type ServerProps = { params: Params; searchParams: SearchParams }\nexport type LayoutProps = { children: React.ReactNode; params: Params }\n\nexport type ActionResult<T> = {\n\tsuccess: boolean\n\tfieldErrors: Partial<Record<keyof T, string[]>>\n\tglobalError: string | null\n\tvalues: Partial<Record<keyof T, string>>\n}\n\nexport type ActionState = {\n\tvalues: Record<string, string>\n\tfieldErrors: Record<string, string[]>\n\tglobalError: string | null\n\tsuccess: boolean\n}\n\nexport type OnValidResult<T> = null | {\n\tglobalError?: string\n\tfieldErrors?: Partial<Record<keyof T, string[]>>\n}\n",
 			"type": "registry:ui"
 		},
 		{

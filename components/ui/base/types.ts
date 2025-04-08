@@ -1,3 +1,8 @@
+export type Params = Promise<{ [key: string]: string }>
+export type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+export type ServerProps = { params: Params; searchParams: SearchParams }
+export type LayoutProps = { children: React.ReactNode; params: Params }
+
 export type ActionResult<T> = {
 	success: boolean
 	fieldErrors: Partial<Record<keyof T, string[]>>
