@@ -20,57 +20,57 @@
 			"target": "./app/globals.css"
 		},
 		{
-			"path": "./components/ui/f/action-button.tsx",
+			"path": "./components/ui/base/action-button.tsx",
 			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { Loader2 } from 'lucide-react'\nimport { useFormStatus } from 'react-dom'\nimport { Button, ButtonProps } from './c-button'\n\nexport function ActionButton({ children, className, disabled, loading, ...props }: ButtonProps & { loading?: boolean }) {\n\tconst { pending } = useFormStatus()\n\n\treturn (\n\t\t<Button className={cn('relative', className)} disabled={disabled || loading || pending} type='submit' {...props}>\n\t\t\t<span className={cn('flex items-center gap-2', { invisible: loading || pending })}>{children}</span>\n\t\t\t{(loading || pending) && (\n\t\t\t\t<div className='absolute m-auto'>\n\t\t\t\t\t<Loader2 className='size-5 animate-spin' />\n\t\t\t\t</div>\n\t\t\t)}\n\t\t</Button>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/action.ts",
+			"path": "./components/ui/base/action.ts",
 			"content": "'use server'\n\nimport { ZodSchema } from 'zod'\nimport { ActionResult, OnValidResult } from './types'\n\nexport async function handleFormAction<T extends Record<string, unknown>>(\n\tformData: FormData,\n\tschema: ZodSchema<T>,\n\tonValid: (data: T) => Promise<OnValidResult<T>>\n): Promise<ActionResult<T>> {\n\tconst raw: Record<string, unknown> = {}\n\tfor (const [key, value] of formData.entries()) {\n\t\traw[key] = value === 'on' ? true : value\n\t}\n\n\tconst parsed = schema.safeParse(raw)\n\tif (!parsed.success) {\n\t\tconst fieldErrors = parsed.error.flatten().fieldErrors as Partial<Record<keyof T, string[]>>\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors,\n\t\t\tglobalError: null,\n\t\t\tvalues: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,\n\t\t}\n\t}\n\n\tconst result = await onValid(parsed.data)\n\n\tif (result?.fieldErrors || result?.globalError) {\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors: result.fieldErrors ?? {},\n\t\t\tglobalError: result.globalError ?? null,\n\t\t\tvalues: Object.fromEntries(Object.entries(parsed.data).map(([k, v]) => [k, String(v ?? '')])) as Partial<\n\t\t\t\tRecord<keyof T, string>\n\t\t\t>,\n\t\t}\n\t}\n\n\treturn {\n\t\tsuccess: true,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t}\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/c-button.tsx",
+			"path": "./components/ui/base/c-button.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { VariantProps } from 'class-variance-authority'\nimport { Button as ButtonBase, buttonVariants } from '../button'\n\nexport type ButtonProps = React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }\n\nexport function Button({ className, ...props }: ButtonProps) {\n\treturn <ButtonBase className={cn('cursor-pointer', className)} {...props} />\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/c-input.tsx",
+			"path": "./components/ui/base/c-input.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { Input as InputBase } from '../input'\n\nexport function Input({ className, ...props }: React.ComponentProps<'input'>) {\n\treturn <InputBase className={cn('focus-visible:ring', className)} {...props} />\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/confirm.tsx",
+			"path": "./components/ui/base/confirm.tsx",
 			"content": "'use client'\n\nimport { ReactNode, useActionState, useEffect, useState } from 'react'\nimport {\n\tAlertDialog,\n\tAlertDialogCancel,\n\tAlertDialogContent,\n\tAlertDialogDescription,\n\tAlertDialogFooter,\n\tAlertDialogHeader,\n\tAlertDialogTitle,\n\tAlertDialogTrigger,\n} from '../alert-dialog'\nimport { ActionButton } from './action-button'\n\nexport function Confirm({\n\taction: _action,\n\tchildren,\n\tdesc,\n\ttitle,\n\tvariant = 'default',\n}: {\n\taction: () => Promise<unknown>\n\tchildren: ReactNode\n\tdesc: string\n\ttitle: string\n\tvariant?: 'default' | 'destructive'\n}) {\n\tconst [open, setOpen] = useState(false)\n\tconst [state, action] = useActionState(_action, null)\n\n\tuseEffect(() => {\n\t\tif (state === undefined) setOpen(false)\n\t}, [state])\n\n\treturn (\n\t\t<AlertDialog open={open} onOpenChange={setOpen}>\n\t\t\t<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>\n\t\t\t<AlertDialogContent>\n\t\t\t\t<AlertDialogHeader>\n\t\t\t\t\t<AlertDialogTitle>{title}</AlertDialogTitle>\n\t\t\t\t\t<AlertDialogDescription>{desc}</AlertDialogDescription>\n\t\t\t\t</AlertDialogHeader>\n\t\t\t\t<AlertDialogFooter>\n\t\t\t\t\t<AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>\n\t\t\t\t\t<form action={action}>\n\t\t\t\t\t\t<ActionButton variant={variant}>Continue</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</AlertDialogFooter>\n\t\t\t</AlertDialogContent>\n\t\t</AlertDialog>\n\t)\n}\n\nexport function ConfirmDelete({ action, children }: { action: () => Promise<unknown>; children: ReactNode }) {\n\treturn (\n\t\t<Confirm\n\t\t\taction={action}\n\t\t\ttitle='Are you absolutely sure?'\n\t\t\tdesc='This action cannot be undone. This will permanently delete this item and remove the data from our servers.'\n\t\t\tvariant='destructive'>\n\t\t\t{children}\n\t\t</Confirm>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/form-checkbox.tsx",
+			"path": "./components/ui/base/form-checkbox.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { Checkbox } from '../checkbox'\nimport { Label } from '../label'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormCheckbox({\n\tclassName,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<typeof Checkbox> & { label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t<div className='flex items-center gap-2'>\n\t\t\t\t<Checkbox id={id} name={id} {...props} />\n\t\t\t\t<Label htmlFor={id}>{label}</Label>\n\t\t\t</div>\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/form-error.tsx",
+			"path": "./components/ui/base/form-error.tsx",
 			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { useEffect } from 'react'\nimport { useFormStatus } from 'react-dom'\nimport { toast } from 'sonner'\n\nexport function FormError({ hidden = false, value }: { hidden?: boolean; value: string[] | undefined }) {\n\tconst { pending } = useFormStatus()\n\n\tuseEffect(() => {\n\t\tif (!hidden) return\n\t\tif (value?.length && value.length > 0) toast.error(`FATAL: ${value[0]}`)\n\t}, [hidden, value])\n\n\tif (hidden || !value || !value.length) return null\n\treturn <div className={cn('text-sm text-destructive', { hidden: pending })}>{value[0]}</div>\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/form-input.tsx",
+			"path": "./components/ui/base/form-input.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Input } from './c-input'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormInput({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Input id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/global-toaster.tsx",
+			"path": "./components/ui/base/global-toaster.tsx",
 			"content": "'use client'\n\nimport { usePathname, useRouter, useSearchParams } from 'next/navigation'\nimport { useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { Toaster } from '../sonner'\n\nexport function GlobalToaster() {\n\tconst pathname = usePathname()\n\tconst router = useRouter()\n\tconst searchParams = useSearchParams()\n\n\tuseEffect(() => {\n\t\tconst message = searchParams.get('message')\n\t\tconst error = searchParams.get('error')\n\t\tconst success = searchParams.get('success')\n\n\t\tif (!message && !error && !success) return\n\t\tconst toastType = message ? toast : success ? toast.success : toast.error\n\t\ttoastType(message ? message : success ? success : error)\n\n\t\tconst newSearchParams = new URLSearchParams(searchParams.toString())\n\t\tconst paramsToRemove = ['message', 'error', 'success']\n\t\tparamsToRemove.forEach((param) => newSearchParams.delete(param))\n\t\tconst redirectPath = `${pathname}?${newSearchParams.toString()}`\n\t\trouter.replace(redirectPath, { scroll: false })\n\t}, [pathname, router, searchParams])\n\n\treturn <Toaster position='top-center' richColors />\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/types.ts",
+			"path": "./components/ui/base/types.ts",
 			"content": "export type ActionResult<T> = {\n\tsuccess: boolean\n\tfieldErrors: Partial<Record<keyof T, string[]>>\n\tglobalError: string | null\n\tvalues: Partial<Record<keyof T, string>>\n}\n\nexport type ActionState = {\n\tvalues: Record<string, string>\n\tfieldErrors: Record<string, string[]>\n\tglobalError: string | null\n\tsuccess: boolean\n}\n\nexport type OnValidResult<T> = null | {\n\tglobalError?: string\n\tfieldErrors?: Partial<Record<keyof T, string[]>>\n}\n",
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/f/use-form.tsx",
+			"path": "./components/ui/base/use-form.tsx",
 			"content": "'use client'\n\nimport { useActionState, useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { ActionResult } from './types'\n\nexport function useForm<T>(action: (_: unknown, formData: FormData) => Promise<ActionResult<T>>) {\n\tconst [formState, formAction] = useActionState(action, {\n\t\tsuccess: false,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t})\n\n\tuseEffect(() => {\n\t\tif (!formState.globalError) return\n\t\ttoast.error(formState.globalError)\n\t}, [formState.globalError])\n\n\treturn [formState, formAction] as const\n}\n",
 			"type": "registry:ui"
 		}
