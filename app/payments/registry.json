@@ -24,7 +24,6 @@
 	],
 	"devDependencies": ["@types/lodash", "prisma"],
 	"registryDependencies": [
-		"https://r.gambrell.dev/auth",
 		"alert-dialog",
 		"button",
 		"card",
