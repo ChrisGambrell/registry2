@@ -6,6 +6,7 @@ import { FormatHeading } from '@/components/editor/plugins/toolbar/block-format/
 import { FormatNumberedList } from '@/components/editor/plugins/toolbar/block-format/format-numbered-list'
 import { FormatParagraph } from '@/components/editor/plugins/toolbar/block-format/format-paragraph'
 import { FormatQuote } from '@/components/editor/plugins/toolbar/block-format/format-quote'
+import { FontSizeToolbarPlugin } from '@/components/editor/plugins/toolbar/font-size-toolbar-plugin'
 import { HistoryToolbarPlugin } from '@/components/editor/plugins/toolbar/history-toolbar-plugin'
 import { ToolbarPlugin } from '@/components/editor/plugins/toolbar/toolbar-plugin'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
@@ -40,6 +41,7 @@ export function Plugins() {
 							<FormatCheckList />
 							<FormatQuote />
 						</BlockFormatDropDown>
+						<FontSizeToolbarPlugin />
 					</div>
 				)}
 			</ToolbarPlugin>
