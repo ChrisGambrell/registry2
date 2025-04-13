@@ -6,6 +6,7 @@ import { FormatHeading } from '@/components/editor/plugins/toolbar/block-format/
 import { FormatNumberedList } from '@/components/editor/plugins/toolbar/block-format/format-numbered-list'
 import { FormatParagraph } from '@/components/editor/plugins/toolbar/block-format/format-paragraph'
 import { FormatQuote } from '@/components/editor/plugins/toolbar/block-format/format-quote'
+import { ElementFormatToolbarPlugin } from '@/components/editor/plugins/toolbar/element-format-toolbar-plugin'
 import { FontFormatToolbarPlugin } from '@/components/editor/plugins/toolbar/font-format-toolbar-plugin'
 import { FontSizeToolbarPlugin } from '@/components/editor/plugins/toolbar/font-size-toolbar-plugin'
 import { HistoryToolbarPlugin } from '@/components/editor/plugins/toolbar/history-toolbar-plugin'
@@ -13,6 +14,7 @@ import { ToolbarPlugin } from '@/components/editor/plugins/toolbar/toolbar-plugi
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
 import { useState } from 'react'
 
 export function Plugins() {
@@ -49,6 +51,7 @@ export function Plugins() {
 							<FontFormatToolbarPlugin format='underline' />
 							<FontFormatToolbarPlugin format='strikethrough' />
 						</div>
+						<ElementFormatToolbarPlugin />
 					</div>
 				)}
 			</ToolbarPlugin>
@@ -67,6 +70,7 @@ export function Plugins() {
 
 				{/* editor plugins */}
 				<HistoryPlugin />
+				<TabIndentationPlugin />
 			</div>
 			{/* actions plugins */}
 		</div>
