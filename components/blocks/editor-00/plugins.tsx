@@ -6,6 +6,7 @@ import { FormatHeading } from '@/components/editor/plugins/toolbar/block-format/
 import { FormatNumberedList } from '@/components/editor/plugins/toolbar/block-format/format-numbered-list'
 import { FormatParagraph } from '@/components/editor/plugins/toolbar/block-format/format-paragraph'
 import { FormatQuote } from '@/components/editor/plugins/toolbar/block-format/format-quote'
+import { FontFormatToolbarPlugin } from '@/components/editor/plugins/toolbar/font-format-toolbar-plugin'
 import { FontSizeToolbarPlugin } from '@/components/editor/plugins/toolbar/font-size-toolbar-plugin'
 import { HistoryToolbarPlugin } from '@/components/editor/plugins/toolbar/history-toolbar-plugin'
 import { ToolbarPlugin } from '@/components/editor/plugins/toolbar/toolbar-plugin'
@@ -28,7 +29,7 @@ export function Plugins() {
 			{/* toolbar plugins */}
 			<ToolbarPlugin>
 				{({ blockType }) => (
-					<div className='vertical-align-middle sticky top-0 z-10 flex gap-2 overflow-auto border-b p-1'>
+					<div className='vertical-align-middle sticky top-0 z-10 flex items-center gap-3 overflow-auto border-b p-1'>
 						<HistoryToolbarPlugin />
 						<BlockFormatDropDown>
 							<FormatParagraph />
@@ -42,6 +43,12 @@ export function Plugins() {
 							<FormatQuote />
 						</BlockFormatDropDown>
 						<FontSizeToolbarPlugin />
+						<div className='flex gap-1'>
+							<FontFormatToolbarPlugin format='bold' />
+							<FontFormatToolbarPlugin format='italic' />
+							<FontFormatToolbarPlugin format='underline' />
+							<FontFormatToolbarPlugin format='strikethrough' />
+						</div>
 					</div>
 				)}
 			</ToolbarPlugin>
