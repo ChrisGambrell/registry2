@@ -1,4 +1,8 @@
 import { ContentEditable } from '@/components/editor/editor-ui/content-editable'
+import { ActionsPlugin } from '@/components/editor/plugins/actions/actions-plugin'
+import { CharacterLimitPlugin } from '@/components/editor/plugins/actions/character-limit-plugin'
+import { CounterCharacterPlugin } from '@/components/editor/plugins/actions/counter-character-plugin'
+import { MaxLengthPlugin } from '@/components/editor/plugins/actions/max-length-plugin'
 import { BlockFormatDropDown } from '@/components/editor/plugins/toolbar/block-format-toolbar-plugin'
 import { FormatBulletedList } from '@/components/editor/plugins/toolbar/block-format/format-bulleted-list'
 import { FormatCheckList } from '@/components/editor/plugins/toolbar/block-format/format-check-list'
@@ -16,6 +20,8 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
 import { useState } from 'react'
+
+const maxLength = 100
 
 export function Plugins() {
 	const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null)
@@ -72,7 +78,22 @@ export function Plugins() {
 				<HistoryPlugin />
 				<TabIndentationPlugin />
 			</div>
+
 			{/* actions plugins */}
+			<ActionsPlugin>
+				<div className='clear-both flex items-center justify-between border-t p-1 overflow-auto gap-2'>
+					<div className='flex justify-start flex-1'>
+						{/* left side action buttons */}
+						<MaxLengthPlugin maxLength={maxLength} />
+						<CharacterLimitPlugin maxLength={maxLength} charset='UTF-16' />
+					</div>
+					<div>
+						<CounterCharacterPlugin charset='UTF-16' />
+						{/* center action buttons */}
+					</div>
+					<div className='flex justify-end flex-1'>{/* right side action buttons */}</div>
+				</div>
+			</ActionsPlugin>
 		</div>
 	)
 }
