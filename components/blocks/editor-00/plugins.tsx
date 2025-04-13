@@ -1,4 +1,11 @@
 import { ContentEditable } from '@/components/editor/editor-ui/content-editable'
+import { BlockFormatDropDown } from '@/components/editor/plugins/toolbar/block-format-toolbar-plugin'
+import { FormatBulletedList } from '@/components/editor/plugins/toolbar/block-format/format-bulleted-list'
+import { FormatCheckList } from '@/components/editor/plugins/toolbar/block-format/format-check-list'
+import { FormatHeading } from '@/components/editor/plugins/toolbar/block-format/format-heading'
+import { FormatNumberedList } from '@/components/editor/plugins/toolbar/block-format/format-numbered-list'
+import { FormatParagraph } from '@/components/editor/plugins/toolbar/block-format/format-paragraph'
+import { FormatQuote } from '@/components/editor/plugins/toolbar/block-format/format-quote'
 import { HistoryToolbarPlugin } from '@/components/editor/plugins/toolbar/history-toolbar-plugin'
 import { ToolbarPlugin } from '@/components/editor/plugins/toolbar/toolbar-plugin'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
@@ -22,6 +29,17 @@ export function Plugins() {
 				{({ blockType }) => (
 					<div className='vertical-align-middle sticky top-0 z-10 flex gap-2 overflow-auto border-b p-1'>
 						<HistoryToolbarPlugin />
+						<BlockFormatDropDown>
+							<FormatParagraph />
+							<FormatHeading levels={['h1', 'h2', 'h3']} />
+							{/* BUG: Lists not working */}
+							<FormatNumberedList />
+							{/* BUG: Lists not working */}
+							<FormatBulletedList />
+							{/* BUG: Lists not working */}
+							<FormatCheckList />
+							<FormatQuote />
+						</BlockFormatDropDown>
 					</div>
 				)}
 			</ToolbarPlugin>
