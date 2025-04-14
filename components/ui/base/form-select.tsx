@@ -17,7 +17,7 @@ export function FormSelect({
 	className?: string
 	// clearOnError?: boolean
 	label: React.ReactNode | string
-	options: { label: React.ReactNode; value: string }[]
+	options: ({ label: React.ReactNode; value: string } | string)[]
 	state?: ActionState
 }) {
 	const id = name ?? ''
@@ -34,8 +34,10 @@ export function FormSelect({
 				</SelectTrigger>
 				<SelectContent>
 					{options.map((option) => (
-						<SelectItem key={option.value} value={option.value}>
-							{option.label}
+						<SelectItem
+							key={typeof option === 'string' ? option : option.value}
+							value={typeof option === 'string' ? option : option.value}>
+							{typeof option === 'string' ? option : option.label}
 						</SelectItem>
 					))}
 				</SelectContent>
