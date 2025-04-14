@@ -18,7 +18,7 @@ export function FormTextarea({
 	const error = state?.fieldErrors?.[id]?.[0]
 
 	return (
-		<div className={cn('grid gap-2', className)}>
+		<div className={cn('grid gap-2 h-fit', className)}>
 			{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}
 			<Textarea id={id} name={id} defaultValue={value} {...props} />
 			<FormError value={error ? [error] : []} />
