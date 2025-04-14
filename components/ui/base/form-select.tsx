@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { SelectProps } from '@radix-ui/react-select'
+import { useEffect, useState } from 'react'
 import { Label } from '../label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select'
 import { FormError } from './form-error'
@@ -7,7 +8,7 @@ import { ActionState } from './types'
 
 export function FormSelect({
 	className,
-	// clearOnError = false,
+	clearOnError = false,
 	label,
 	name,
 	options,
@@ -15,20 +16,25 @@ export function FormSelect({
 	...props
 }: SelectProps & {
 	className?: string
-	// clearOnError?: boolean
+	clearOnError?: boolean
 	label: React.ReactNode | string
 	options: ({ label: React.ReactNode; value: string } | string)[]
 	state?: ActionState
 }) {
 	const id = name ?? ''
-	// TODO: Value and clear on error
-	// const value = clearOnError ? '' : state?.values?.[id] ?? ''
+	const _value = clearOnError ? '' : state?.values?.[id] ?? ''
 	const error = state?.fieldErrors?.[id]?.[0]
+
+	const [value, setValue] = useState(_value)
+
+	useEffect(() => {
+		setValue(_value)
+	}, [_value])
 
 	return (
 		<div className={cn('grid gap-2 h-fit', className)}>
 			{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}
-			<Select {...props}>
+			<Select value={value} onValueChange={setValue} {...props}>
 				<SelectTrigger className='w-full'>
 					<SelectValue placeholder='Select an option' />
 				</SelectTrigger>
@@ -42,6 +48,7 @@ export function FormSelect({
 					))}
 				</SelectContent>
 			</Select>
+			<input type='hidden' name={id} value={value} />
 			<FormError value={error ? [error] : []} />
 		</div>
 	)
