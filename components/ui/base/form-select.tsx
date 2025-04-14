@@ -29,7 +29,7 @@ export function FormSelect({
 		<div className={cn('grid gap-2 h-fit', className)}>
 			{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}
 			<Select {...props}>
-				<SelectTrigger>
+				<SelectTrigger className='w-full'>
 					<SelectValue placeholder='Select an option' />
 				</SelectTrigger>
 				<SelectContent>
