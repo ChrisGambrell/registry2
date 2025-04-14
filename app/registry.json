@@ -7,6 +7,7 @@
 		"@radix-ui/react-dialog",
 		"@radix-ui/react-label",
 		"@radix-ui/react-popover",
+		"@radix-ui/react-select",
 		"@radix-ui/react-slot",
 		"@tiptap/pm",
 		"@tiptap/react",
@@ -17,7 +18,19 @@
 		"zod"
 	],
 	"devDependencies": [],
-	"registryDependencies": ["alert-dialog", "button", "checkbox", "command", "dialog", "input", "label", "popover", "sonner", "textarea"],
+	"registryDependencies": [
+		"alert-dialog",
+		"button",
+		"checkbox",
+		"command",
+		"dialog",
+		"input",
+		"label",
+		"popover",
+		"select",
+		"sonner",
+		"textarea"
+	],
 	"files": [
 		{
 			"path": "./app/globals.css",
@@ -68,6 +81,11 @@
 		{
 			"path": "./components/ui/base/form-input.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Input } from './c-input'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormInput({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2 h-fit', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Input id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/form-select.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { SelectProps } from '@radix-ui/react-select'\nimport { Label } from '../label'\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormSelect({\n\tclassName,\n\t// clearOnError = false,\n\tlabel,\n\tname,\n\toptions,\n\tstate,\n\t...props\n}: SelectProps & {\n\tclassName?: string\n\t// clearOnError?: boolean\n\tlabel: React.ReactNode | string\n\toptions: { label: React.ReactNode; value: string }[]\n\tstate?: ActionState\n}) {\n\tconst id = name ?? ''\n\t// TODO: Value and clear on error\n\t// const value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2 h-fit', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Select {...props}>\n\t\t\t\t<SelectTrigger>\n\t\t\t\t\t<SelectValue placeholder='Select an option' />\n\t\t\t\t</SelectTrigger>\n\t\t\t\t<SelectContent>\n\t\t\t\t\t{options.map((option) => (\n\t\t\t\t\t\t<SelectItem key={option.value} value={option.value}>\n\t\t\t\t\t\t\t{option.label}\n\t\t\t\t\t\t</SelectItem>\n\t\t\t\t\t))}\n\t\t\t\t</SelectContent>\n\t\t\t</Select>\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
