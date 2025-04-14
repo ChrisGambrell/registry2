@@ -11,6 +11,7 @@ import { ActionState } from './types'
 export function FormSelect({
 	className,
 	clearOnError = false,
+	defaultValue,
 	label,
 	name,
 	options,
@@ -24,7 +25,8 @@ export function FormSelect({
 	state?: ActionState
 }) {
 	const id = name ?? ''
-	const _value = clearOnError ? '' : state?.values?.[id] ?? ''
+	// TODO: Use defaultValue in all form components?
+	const _value = clearOnError ? '' : state?.values?.[id] ?? defaultValue ?? ''
 	const error = state?.fieldErrors?.[id]?.[0]
 
 	const [value, setValue] = useState(_value)
