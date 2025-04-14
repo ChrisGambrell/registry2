@@ -1,8 +1,10 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import { SelectProps } from '@radix-ui/react-select'
 import { useEffect, useState } from 'react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../base/c-select'
 import { Label } from '../label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select'
 import { FormError } from './form-error'
 import { ActionState } from './types'
 
