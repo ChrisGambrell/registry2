@@ -17,7 +17,7 @@
 		"zod"
 	],
 	"devDependencies": [],
-	"registryDependencies": ["alert-dialog", "button", "checkbox", "command", "dialog", "input", "label", "popover", "sonner"],
+	"registryDependencies": ["alert-dialog", "button", "checkbox", "command", "dialog", "input", "label", "popover", "sonner", "textarea"],
 	"files": [
 		{
 			"path": "./app/globals.css",
@@ -46,6 +46,11 @@
 			"type": "registry:ui"
 		},
 		{
+			"path": "./components/ui/base/c-textarea.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Textarea as TextareaBase } from '../textarea'\n\nexport function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {\n\treturn <TextareaBase className={cn('focus-visible:ring', className)} {...props} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
 			"path": "./components/ui/base/confirm.tsx",
 			"content": "'use client'\n\nimport { ReactNode, useActionState, useEffect, useState } from 'react'\nimport {\n\tAlertDialog,\n\tAlertDialogCancel,\n\tAlertDialogContent,\n\tAlertDialogDescription,\n\tAlertDialogFooter,\n\tAlertDialogHeader,\n\tAlertDialogTitle,\n\tAlertDialogTrigger,\n} from '../alert-dialog'\nimport { ActionButton } from './action-button'\n\nexport function Confirm({\n\taction: _action,\n\tchildren,\n\tdesc,\n\ttitle,\n\tvariant = 'default',\n}: {\n\taction: () => Promise<unknown>\n\tchildren: ReactNode\n\tdesc: string\n\ttitle: string\n\tvariant?: 'default' | 'destructive'\n}) {\n\tconst [open, setOpen] = useState(false)\n\tconst [state, action] = useActionState(_action, null)\n\n\tuseEffect(() => {\n\t\tif (state === undefined) setOpen(false)\n\t}, [state])\n\n\treturn (\n\t\t<AlertDialog open={open} onOpenChange={setOpen}>\n\t\t\t<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>\n\t\t\t<AlertDialogContent>\n\t\t\t\t<AlertDialogHeader>\n\t\t\t\t\t<AlertDialogTitle>{title}</AlertDialogTitle>\n\t\t\t\t\t<AlertDialogDescription>{desc}</AlertDialogDescription>\n\t\t\t\t</AlertDialogHeader>\n\t\t\t\t<AlertDialogFooter>\n\t\t\t\t\t<AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>\n\t\t\t\t\t<form action={action}>\n\t\t\t\t\t\t<ActionButton variant={variant}>Continue</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</AlertDialogFooter>\n\t\t\t</AlertDialogContent>\n\t\t</AlertDialog>\n\t)\n}\n\nexport function ConfirmDelete({ action, children }: { action: () => Promise<unknown>; children: ReactNode }) {\n\treturn (\n\t\t<Confirm\n\t\t\taction={action}\n\t\t\ttitle='Are you absolutely sure?'\n\t\t\tdesc='This action cannot be undone. This will permanently delete this item and remove the data from our servers.'\n\t\t\tvariant='destructive'>\n\t\t\t{children}\n\t\t</Confirm>\n\t)\n}\n",
 			"type": "registry:ui"
@@ -63,6 +68,11 @@
 		{
 			"path": "./components/ui/base/form-input.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Input } from './c-input'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormInput({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Input id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/form-textarea.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Textarea } from './c-textarea'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormTextarea({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'textarea'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Textarea id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:ui"
 		},
 		{
