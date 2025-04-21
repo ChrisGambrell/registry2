@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { Label } from '../label'
 import { Input } from './c-input'
 import { FormError } from './form-error'
-import { ActionState } from './types'
+import { ActionState } from './utils'
 
 export function FormInput({
 	className,

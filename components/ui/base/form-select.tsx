@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../base/c-select'
 import { Label } from '../label'
 import { FormError } from './form-error'
-import { ActionState } from './types'
+import { ActionState } from './utils'
 
 export function FormSelect({
 	className,

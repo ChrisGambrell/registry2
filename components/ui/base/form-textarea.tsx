@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { Label } from '../label'
 import { Textarea } from './c-textarea'
 import { FormError } from './form-error'
-import { ActionState } from './types'
+import { ActionState } from './utils'
 
 export function FormTextarea({
 	className,
