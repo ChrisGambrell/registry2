@@ -8,8 +8,6 @@ export async function handleFormAction<T extends Record<string, unknown>>(
 	schema: ZodSchema<T>,
 	onValid: (data: T) => Promise<OnValidResult<T> | void>
 ): Promise<ActionResult<T>> {
-	await new Promise((resolve) => setTimeout(resolve, 500))
-
 	const parsed = validateFormData(formData, schema) as ActionResult<T>
 	if (!parsed.success) return parsed
 
