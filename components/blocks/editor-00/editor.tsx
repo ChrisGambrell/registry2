@@ -1,61 +1,68 @@
 'use client'
 
-import {
-  InitialConfigType,
-  LexicalComposer,
-} from '@lexical/react/LexicalComposer'
+import { $generateHtmlFromNodes } from '@lexical/html'
+import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer'
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
-import { EditorState, SerializedEditorState } from 'lexical'
+import { SerializedEditorState } from 'lexical'
 
 import { editorTheme } from '@/components/editor/themes/editor-theme'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
+import { useState } from 'react'
 import { nodes } from './nodes'
 import { Plugins } from './plugins'
 
 const editorConfig: InitialConfigType = {
-  namespace: 'Editor',
-  theme: editorTheme,
-  nodes,
-  onError: (error: Error) => {
-    console.error(error)
-  },
+	namespace: 'Editor',
+	theme: editorTheme,
+	nodes,
+	onError: (error: Error) => {
+		console.error(error)
+	},
 }
 
-export function Editor({
-  editorState,
-  editorSerializedState,
-  onChange,
-  onSerializedChange,
-}: {
-  editorState?: EditorState
-  editorSerializedState?: SerializedEditorState
-  onChange?: (editorState: EditorState) => void
-  onSerializedChange?: (editorSerializedState: SerializedEditorState) => void
-}) {
-  return (
-    <div className="overflow-hidden rounded-lg border bg-background shadow">
-      <LexicalComposer
-        initialConfig={{
-          ...editorConfig,
-          ...(editorState ? { editorState } : {}),
-          ...(editorSerializedState
-            ? { editorState: JSON.stringify(editorSerializedState) }
-            : {}),
-        }}
-      >
-        <TooltipProvider>
-          <Plugins />
+export function Editor({ value, onValueChange }: { value?: SerializedEditorState; onValueChange: (value: SerializedEditorState) => void }) {
+	const [editorState, setEditorState] = useState(
+		value ?? {
+			root: {
+				children: [
+					{
+						direction: 'ltr',
+						format: '',
+						indent: 0,
+						type: 'paragraph',
+						version: 1,
+					},
+				],
+				direction: 'ltr',
+				format: '',
+				indent: 0,
+				type: 'root',
+				version: 1,
+			},
+		}
+	)
 
-          <OnChangePlugin
-            ignoreSelectionChange={true}
-            onChange={(editorState) => {
-              onChange?.(editorState)
-              onSerializedChange?.(editorState.toJSON())
-            }}
-          />
-        </TooltipProvider>
-      </LexicalComposer>
-    </div>
-  )
+	return (
+		<div className='overflow-hidden rounded-lg border bg-background shadow'>
+			<LexicalComposer
+				initialConfig={{
+					...editorConfig,
+					...(editorState ? { editorState: JSON.stringify(editorState) } : {}),
+				}}>
+				<TooltipProvider>
+					<Plugins />
+
+					<OnChangePlugin
+						ignoreSelectionChange={true}
+						onChange={(editorState) => {
+							console.log($generateHtmlFromNodes(editorState, null))
+							setEditorState(editorState.toJSON())
+							onValueChange(editorState.toJSON())
+						}}
+					/>
+				</TooltipProvider>
+			</LexicalComposer>
+		</div>
+	)
 }
