@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { Checkbox } from '../checkbox'
 import { Label } from '../label'
 import { FormError } from './form-error'
-import { ActionState } from './types'
+import { ActionState } from './utils'
 
 export function FormCheckbox({
 	className,

@@ -1,0 +1,40 @@
+{
+	"name": "db",
+	"type": "registry:block",
+	"dependencies": ["@prisma/client", "@t3-oss/env-nextjs", "zod"],
+	"devDependencies": ["prisma"],
+	"registryDependencies": [],
+	"files": [
+		{
+			"path": "./docker-compose.yml",
+			"content": "version: '3.9'\n\nservices:\n    db:\n        image: postgres\n        ports:\n            - '5432:5432'\n        restart: always\n        shm_size: 128mb\n        environment:\n            POSTGRES_USER: postgres\n            POSTGRES_PASSWORD: password\n            POSTGRES_DB: postgres\n",
+			"type": "registry:example",
+			"target": "~/docker-compose.yml"
+		},
+		{
+			"path": "./example.env",
+			"content": "DATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\nNEXT_PUBLIC_APP_URL=\"http://localhost:3000\"",
+			"type": "registry:example",
+			"target": "~/example.env"
+		},
+		{
+			"path": "./lib/db.ts",
+			"content": "import { PrismaClient } from '@prisma/client'\n\nconst prismaClientSingleton = () => {\n\treturn new PrismaClient()\n}\n\ndeclare const globalThis: {\n\tprismaGlobal: ReturnType<typeof prismaClientSingleton>\n} & typeof global\n\nconst prisma = globalThis.prismaGlobal ?? prismaClientSingleton()\n\nexport default prisma\n\nif (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma\n",
+			"type": "registry:lib"
+		},
+		{
+			"path": "./lib/env.ts",
+			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport { z } from 'zod'\n\nexport const env = createEnv({\n\tserver: { DATABASE_URL: z.string().url() },\n\tclient: { NEXT_PUBLIC_APP_URL: z.string().url() },\n\truntimeEnv: {\n\t\tDATABASE_URL: process.env.DATABASE_URL,\n\t\tNEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,\n\t},\n})\n",
+			"type": "registry:lib"
+		},
+		{
+			"path": "./prisma/schema.prisma",
+			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n}\n\nenum TodoStatus {\n  NEW\n  IN_PROGRESS\n  COMPLETED\n}\n\nmodel Todo {\n  id         String   @id @default(cuid())\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n\n  title  String\n  desc   String?\n  status TodoStatus @default(NEW)\n}\n",
+			"type": "registry:example",
+			"target": "~/prisma/schema.prisma"
+		}
+	],
+	"tailwind": {},
+	"cssVars": {},
+	"meta": {}
+}
