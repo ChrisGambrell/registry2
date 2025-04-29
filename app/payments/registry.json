@@ -156,6 +156,76 @@
 			"type": "registry:block"
 		},
 		{
+			"path": "./components/ui/base/action-button.tsx",
+			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { Loader2 } from 'lucide-react'\nimport { useFormStatus } from 'react-dom'\nimport { Button, ButtonProps } from './c-button'\n\nexport function ActionButton({ children, className, disabled, loading, ...props }: ButtonProps & { loading?: boolean }) {\n\tconst { pending } = useFormStatus()\n\n\treturn (\n\t\t<Button className={cn('relative', className)} disabled={disabled || loading || pending} type='submit' {...props}>\n\t\t\t<span className={cn('flex items-center gap-2', { invisible: loading || pending })}>{children}</span>\n\t\t\t{(loading || pending) && (\n\t\t\t\t<div className='absolute m-auto'>\n\t\t\t\t\t<Loader2 className='size-5 animate-spin' />\n\t\t\t\t</div>\n\t\t\t)}\n\t\t</Button>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/action.ts",
+			"content": "'use server'\n\nimport { ZodSchema } from 'zod'\nimport { ActionResult, OnValidResult } from './types'\n\nexport async function handleFormAction<T extends Record<string, unknown>>(\n\tformData: FormData,\n\tschema: ZodSchema<T>,\n\tonValid: (data: T) => Promise<OnValidResult<T>>\n): Promise<ActionResult<T>> {\n\tconst raw: Record<string, unknown> = {}\n\tfor (const [key, value] of formData.entries()) {\n\t\traw[key] = value === 'on' ? true : value\n\t}\n\n\tconst parsed = schema.safeParse(raw)\n\tif (!parsed.success) {\n\t\tconst fieldErrors = parsed.error.flatten().fieldErrors as Partial<Record<keyof T, string[]>>\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors,\n\t\t\tglobalError: null,\n\t\t\tvalues: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,\n\t\t}\n\t}\n\n\tconst result = await onValid(parsed.data)\n\n\tif (result?.fieldErrors || result?.globalError) {\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tfieldErrors: result.fieldErrors ?? {},\n\t\t\tglobalError: result.globalError ?? null,\n\t\t\tvalues: Object.fromEntries(Object.entries(parsed.data).map(([k, v]) => [k, String(v ?? '')])) as Partial<\n\t\t\t\tRecord<keyof T, string>\n\t\t\t>,\n\t\t}\n\t}\n\n\treturn {\n\t\tsuccess: true,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t}\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/c-button.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { VariantProps } from 'class-variance-authority'\nimport { Button as ButtonBase, buttonVariants } from '../button'\n\nexport type ButtonProps = React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }\n\nexport function Button({ className, ...props }: ButtonProps) {\n\treturn <ButtonBase className={cn('cursor-pointer', className)} {...props} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/c-input.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Input as InputBase } from '../input'\n\nexport function Input({ className, ...props }: React.ComponentProps<'input'>) {\n\treturn <InputBase className={cn('focus-visible:ring', className)} {...props} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/confirm.tsx",
+			"content": "'use client'\n\nimport { ReactNode, useActionState, useEffect, useState } from 'react'\nimport {\n\tAlertDialog,\n\tAlertDialogCancel,\n\tAlertDialogContent,\n\tAlertDialogDescription,\n\tAlertDialogFooter,\n\tAlertDialogHeader,\n\tAlertDialogTitle,\n\tAlertDialogTrigger,\n} from '../alert-dialog'\nimport { ActionButton } from './action-button'\n\nexport function Confirm({\n\taction: _action,\n\tchildren,\n\tdesc,\n\ttitle,\n\tvariant = 'default',\n}: {\n\taction: () => Promise<unknown>\n\tchildren: ReactNode\n\tdesc: string\n\ttitle: string\n\tvariant?: 'default' | 'destructive'\n}) {\n\tconst [open, setOpen] = useState(false)\n\tconst [state, action] = useActionState(_action, null)\n\n\tuseEffect(() => {\n\t\tif (state === undefined) setOpen(false)\n\t}, [state])\n\n\treturn (\n\t\t<AlertDialog open={open} onOpenChange={setOpen}>\n\t\t\t<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>\n\t\t\t<AlertDialogContent>\n\t\t\t\t<AlertDialogHeader>\n\t\t\t\t\t<AlertDialogTitle>{title}</AlertDialogTitle>\n\t\t\t\t\t<AlertDialogDescription>{desc}</AlertDialogDescription>\n\t\t\t\t</AlertDialogHeader>\n\t\t\t\t<AlertDialogFooter>\n\t\t\t\t\t<AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>\n\t\t\t\t\t<form action={action}>\n\t\t\t\t\t\t<ActionButton variant={variant}>Continue</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</AlertDialogFooter>\n\t\t\t</AlertDialogContent>\n\t\t</AlertDialog>\n\t)\n}\n\nexport function ConfirmDelete({ action, children }: { action: () => Promise<unknown>; children: ReactNode }) {\n\treturn (\n\t\t<Confirm\n\t\t\taction={action}\n\t\t\ttitle='Are you absolutely sure?'\n\t\t\tdesc='This action cannot be undone. This will permanently delete this item and remove the data from our servers.'\n\t\t\tvariant='destructive'>\n\t\t\t{children}\n\t\t</Confirm>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/form-checkbox.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Checkbox } from '../checkbox'\nimport { Label } from '../label'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormCheckbox({\n\tclassName,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<typeof Checkbox> & { label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t<div className='flex items-center gap-2'>\n\t\t\t\t<Checkbox id={id} name={id} {...props} />\n\t\t\t\t<Label htmlFor={id}>{label}</Label>\n\t\t\t</div>\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/form-error.tsx",
+			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { useEffect } from 'react'\nimport { useFormStatus } from 'react-dom'\nimport { toast } from 'sonner'\n\nexport function FormError({ hidden = false, value }: { hidden?: boolean; value: string[] | undefined }) {\n\tconst { pending } = useFormStatus()\n\n\tuseEffect(() => {\n\t\tif (!hidden) return\n\t\tif (value?.length && value.length > 0) toast.error(`FATAL: ${value[0]}`)\n\t}, [hidden, value])\n\n\tif (hidden || !value || !value.length) return null\n\treturn <div className={cn('text-sm text-destructive', { hidden: pending })}>{value[0]}</div>\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/form-input.tsx",
+			"content": "import { cn } from '@/lib/utils'\nimport { Label } from '../label'\nimport { Input } from './c-input'\nimport { FormError } from './form-error'\nimport { ActionState } from './types'\n\nexport function FormInput({\n\tclassName,\n\tclearOnError = false,\n\tid: _id,\n\tlabel,\n\tname,\n\tstate,\n\t...props\n}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {\n\tconst id = String(name ?? _id)\n\tconst value = clearOnError ? '' : state?.values?.[id] ?? ''\n\tconst error = state?.fieldErrors?.[id]?.[0]\n\n\treturn (\n\t\t<div className={cn('grid gap-2', className)}>\n\t\t\t{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}\n\t\t\t<Input id={id} name={id} defaultValue={value} {...props} />\n\t\t\t<FormError value={error ? [error] : []} />\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/global-toaster.tsx",
+			"content": "'use client'\n\nimport { usePathname, useRouter, useSearchParams } from 'next/navigation'\nimport { useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { Toaster } from '../sonner'\n\nexport function GlobalToaster() {\n\tconst pathname = usePathname()\n\tconst router = useRouter()\n\tconst searchParams = useSearchParams()\n\n\tuseEffect(() => {\n\t\tconst message = searchParams.get('message')\n\t\tconst error = searchParams.get('error')\n\t\tconst success = searchParams.get('success')\n\n\t\tif (!message && !error && !success) return\n\t\tconst toastType = message ? toast : success ? toast.success : toast.error\n\t\ttoastType(message ? message : success ? success : error)\n\n\t\tconst newSearchParams = new URLSearchParams(searchParams.toString())\n\t\tconst paramsToRemove = ['message', 'error', 'success']\n\t\tparamsToRemove.forEach((param) => newSearchParams.delete(param))\n\t\tconst redirectPath = `${pathname}?${newSearchParams.toString()}`\n\t\trouter.replace(redirectPath, { scroll: false })\n\t}, [pathname, router, searchParams])\n\n\treturn <Toaster position='top-center' richColors />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/theme-provider.tsx",
+			"content": "'use client'\n\nimport { ThemeProvider as NextThemesProvider } from 'next-themes'\nimport * as React from 'react'\n\nexport function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {\n\treturn <NextThemesProvider {...props}>{children}</NextThemesProvider>\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/theme-switcher.tsx",
+			"content": "'use client'\n\nimport { cn } from '@/lib/utils'\nimport { Check } from 'lucide-react'\nimport { useTheme } from 'next-themes'\nimport { useState } from 'react'\nimport { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../command'\nimport { Popover, PopoverContent, PopoverTrigger } from '../popover'\nimport { themes } from './themes'\n\nexport function ThemeSwitcher({ children }: { children: React.ReactNode }) {\n\tconst [open, setOpen] = useState(false)\n\tconst { theme, setTheme } = useTheme()\n\n\treturn (\n\t\t<Popover open={open} onOpenChange={setOpen}>\n\t\t\t<PopoverTrigger asChild>{children}</PopoverTrigger>\n\t\t\t<PopoverContent align='end' className='p-0'>\n\t\t\t\t<Command>\n\t\t\t\t\t<CommandInput placeholder='Search themes...' />\n\t\t\t\t\t<CommandList>\n\t\t\t\t\t\t<CommandEmpty>No theme found.</CommandEmpty>\n\t\t\t\t\t\t<CommandGroup>\n\t\t\t\t\t\t\t{themes.map((t) => (\n\t\t\t\t\t\t\t\t<CommandItem\n\t\t\t\t\t\t\t\t\tkey={t.value}\n\t\t\t\t\t\t\t\t\tvalue={t.value}\n\t\t\t\t\t\t\t\t\tonSelect={(currentValue) => {\n\t\t\t\t\t\t\t\t\t\tsetTheme(currentValue)\n\t\t\t\t\t\t\t\t\t\tsetOpen(false)\n\t\t\t\t\t\t\t\t\t}}\n\t\t\t\t\t\t\t\t\tasChild>\n\t\t\t\t\t\t\t\t\t<div className='flex items-center gap-3'>\n\t\t\t\t\t\t\t\t\t\t<div className='flex gap-0.5'>\n\t\t\t\t\t\t\t\t\t\t\t<ColorBox color={t.styles.primary} />\n\t\t\t\t\t\t\t\t\t\t\t<ColorBox color={t.styles.accent} />\n\t\t\t\t\t\t\t\t\t\t\t<ColorBox color={t.styles.secondary} />\n\t\t\t\t\t\t\t\t\t\t\t<ColorBox color={t.styles.border} />\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t<span className='capitalize font-medium'>{t.label ?? 'default'}</span>\n\t\t\t\t\t\t\t\t\t\t<Check className={cn('ml-auto', theme === t.value ? 'opacity-100' : 'opacity-0')} />\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</CommandItem>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</CommandGroup>\n\t\t\t\t\t</CommandList>\n\t\t\t\t</Command>\n\t\t\t</PopoverContent>\n\t\t</Popover>\n\t)\n}\n\nfunction ColorBox({ color }: { color: string }) {\n\treturn <div className='h-3 w-3 rounded-sm border border-muted' style={{ backgroundColor: color }} />\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/themes.ts",
+			"content": "export const themes = [\n\t{\n\t\tlabel: 'Light',\n\t\tvalue: 'light',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.205 0 0)',\n\t\t\tsecondary: 'oklch(0.97 0 0)',\n\t\t\taccent: 'oklch(0.97 0 0)',\n\t\t\tborder: 'oklch(0.922 0 0)',\n\t\t},\n\t},\n\t{\n\t\tlabel: 'Dark',\n\t\tvalue: 'dark',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.922 0 0)',\n\t\t\tsecondary: 'oklch(0.269 0 0)',\n\t\t\taccent: 'oklch(0.269 0 0)',\n\t\t\tborder: 'oklch(1 0 0 / 10%)',\n\t\t},\n\t},\n\t{\n\t\tlabel: 'Modern Minimal',\n\t\tvalue: 'modern-minimal',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.62 0.19 259.81)',\n\t\t\tsecondary: 'oklch(0.97 0 264.54)',\n\t\t\taccent: 'oklch(0.95 0.03 236.82)',\n\t\t\tborder: 'oklch(0.93 0.01 264.53)',\n\t\t},\n\t},\n\t{\n\t\tlabel: 'Kodama Grove',\n\t\tvalue: 'kodama-grove',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.67 0.11 118.91)',\n\t\t\tsecondary: 'oklch(0.85 0.06 91.15)',\n\t\t\taccent: 'oklch(0.84 0.07 90.33)',\n\t\t\tborder: 'oklch(0.69 0.04 59.84)',\n\t\t},\n\t},\n\t{\n\t\tlabel: 'Neo Brutalism',\n\t\tvalue: 'neo-brutalism',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.65 0.24 26.97)',\n\t\t\tsecondary: 'oklch(0.97 0.21 109.77)',\n\t\t\taccent: 'oklch(0.56 0.24 260.82)',\n\t\t\tborder: 'oklch(0 0 0)',\n\t\t},\n\t},\n\t{\n\t\tlabel: 'Vintage Paper',\n\t\tvalue: 'vintage-paper',\n\t\tstyles: {\n\t\t\tprimary: 'oklch(0.62 0.08 65.54)',\n\t\t\tsecondary: 'oklch(0.88 0.03 85.57)',\n\t\t\taccent: 'oklch(0.83 0.04 88.81)',\n\t\t\tborder: 'oklch(0.86 0.03 84.59)',\n\t\t},\n\t},\n]\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/types.ts",
+			"content": "export type Params = Promise<{ [key: string]: string }>\nexport type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>\nexport type ServerProps = { params: Params; searchParams: SearchParams }\nexport type LayoutProps = { children: React.ReactNode; params: Params }\n\nexport type ActionResult<T> = {\n\tsuccess: boolean\n\tfieldErrors: Partial<Record<keyof T, string[]>>\n\tglobalError: string | null\n\tvalues: Partial<Record<keyof T, string>>\n}\n\nexport type ActionState = {\n\tvalues: Record<string, string>\n\tfieldErrors: Record<string, string[]>\n\tglobalError: string | null\n\tsuccess: boolean\n}\n\nexport type OnValidResult<T> = null | {\n\tglobalError?: string\n\tfieldErrors?: Partial<Record<keyof T, string[]>>\n}\n",
+			"type": "registry:ui"
+		},
+		{
+			"path": "./components/ui/base/use-form.tsx",
+			"content": "'use client'\n\nimport { useActionState, useEffect } from 'react'\nimport { toast } from 'sonner'\nimport { ActionResult } from './types'\n\nexport function useForm<T>(action: (_: unknown, formData: FormData) => Promise<ActionResult<T>>) {\n\tconst [formState, formAction] = useActionState(action, {\n\t\tsuccess: false,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t})\n\n\tuseEffect(() => {\n\t\tif (!formState.globalError) return\n\t\ttoast.error(formState.globalError)\n\t}, [formState.globalError])\n\n\treturn [formState, formAction] as const\n}\n",
+			"type": "registry:ui"
+		},
+		{
 			"path": "./docker-compose.yml",
 			"content": "version: '3.9'\n\nservices:\n    db:\n        image: postgres\n        ports:\n            - '5432:5432'\n        restart: always\n        shm_size: 128mb\n        environment:\n            POSTGRES_USER: postgres\n            POSTGRES_PASSWORD: password\n            POSTGRES_DB: postgres\n",
 			"type": "registry:example",
@@ -163,7 +233,7 @@
 		},
 		{
 			"path": "./example.env",
-			"content": "AUTH_SECRET=\"\"\n\nAUTH_GITHUB_ID=\"\"\nAUTH_GITHUB_SECRET=\"\"\n\nAUTH_GOOGLE_ID=\"\"\nAUTH_GOOGLE_SECRET=\"\"\n\nAUTH_RESEND_KEY=\"\"\nAUTH_RESEND_EMAIL=\"noreply@example.com\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nSTRIPE_SECRET_KEY=\"sk_test_\"\nSTRIPE_WEBHOOK_SECRET=\"whsec_\"\n\nNEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\"pk_test_\"\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"",
+			"content": "# https://www.lastpass.com/features/password-generator\nAUTH_SECRET=\"\"\n\n# https://github.com/settings/developers\n# Callback URL: http://localhost:3000/api/auth/callback/github\nAUTH_GITHUB_ID=\"\"\nAUTH_GITHUB_SECRET=\"\"\n\n# https://console.cloud.google.com/welcome\n# Callback URL: http://localhost:3000/api/auth/callback/google\nAUTH_GOOGLE_ID=\"\"\nAUTH_GOOGLE_SECRET=\"\"\n\n# https://resend.com/api-keys\nAUTH_RESEND_KEY=\"\"\nAUTH_RESEND_EMAIL=\"noreply@example.com\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nSTRIPE_SECRET_KEY=\"sk_test_\"\nSTRIPE_WEBHOOK_SECRET=\"whsec_\"\n\nNEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\"pk_test_\"\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"",
 			"type": "registry:example",
 			"target": "~/example.env"
 		},
