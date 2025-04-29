@@ -142,7 +142,7 @@
 		},
 		{
 			"path": "./example.env",
-			"content": "AUTH_SECRET=\"\"\n\nAUTH_GITHUB_ID=\"\"\nAUTH_GITHUB_SECRET=\"\"\n\nAUTH_GOOGLE_ID=\"\"\nAUTH_GOOGLE_SECRET=\"\"\n\nAUTH_RESEND_KEY=\"\"\nAUTH_RESEND_EMAIL=\"noreply@example.com\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nNEXT_PUBLIC_APP_URL=\"http://localhost:3000\"",
+			"content": "# https://www.lastpass.com/features/password-generator\nAUTH_SECRET=\"\"\n\n# https://github.com/settings/developers\n# Callback URL: http://localhost:3000/api/auth/callback/github\nAUTH_GITHUB_ID=\"\"\nAUTH_GITHUB_SECRET=\"\"\n\n# https://console.cloud.google.com/welcome\n# Callback URL: http://localhost:3000/api/auth/callback/google\nAUTH_GOOGLE_ID=\"\"\nAUTH_GOOGLE_SECRET=\"\"\n\n# https://resend.com/api-keys\nAUTH_RESEND_KEY=\"\"\nAUTH_RESEND_EMAIL=\"noreply@example.com\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nNEXT_PUBLIC_APP_URL=\"http://localhost:3000\"",
 			"type": "registry:example",
 			"target": "~/example.env"
 		},
