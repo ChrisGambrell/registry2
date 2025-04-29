@@ -9,6 +9,7 @@
 		"@radix-ui/react-dialog",
 		"@radix-ui/react-label",
 		"@radix-ui/react-popover",
+		"@radix-ui/react-select",
 		"@radix-ui/react-slot",
 		"@radix-ui/react-tabs",
 		"@t3-oss/env-nextjs",
@@ -26,7 +27,6 @@
 	],
 	"devDependencies": ["prisma"],
 	"registryDependencies": [
-		"https://r.gambrell.dev",
 		"alert-dialog",
 		"button",
 		"card",
@@ -36,8 +36,11 @@
 		"input",
 		"label",
 		"popover",
+		"select",
 		"sonner",
-		"tabs"
+		"tabs",
+		"textarea",
+		"https://r.gambrell.dev"
 	],
 	"files": [
 		{
@@ -96,7 +99,7 @@
 		},
 		{
 			"path": "./app/(protected)/layout.tsx",
-			"content": "'use client'\n\nimport { Icons } from '@/components/icons'\nimport { Button } from '@/components/ui/base/c-button'\nimport { ThemeSwitcher } from '@/components/ui/base/theme-switcher'\nimport { LayoutProps } from '@/components/ui/base/types'\nimport { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport Link from 'next/link'\nimport { usePathname } from 'next/navigation'\nimport { useState } from 'react'\n\nexport default function Layout({ children }: LayoutProps) {\n\tconst pathname = usePathname()\n\tconst [tab, setTab] = useState(pathname.split('/').pop() ?? 'dashboard')\n\n\treturn (\n\t\t<div className='min-h-screen bg-background relative flex flex-col sm:flex-row sm:items-center sm:justify-center p-4 sm:p-8'>\n\t\t\t<div className='w-full sm:max-w-md grid gap-2'>\n\t\t\t\t<div className='flex gap-4 justify-between'>\n\t\t\t\t\t<Tabs value={tab} onValueChange={setTab}>\n\t\t\t\t\t\t<TabsList>\n\t\t\t\t\t\t\t<TabsTrigger asChild value='dashboard'>\n\t\t\t\t\t\t\t\t<Link href='/dashboard'>Account</Link>\n\t\t\t\t\t\t\t</TabsTrigger>\n\t\t\t\t\t\t\t<TabsTrigger asChild value='accounts'>\n\t\t\t\t\t\t\t\t<Link href='/accounts'>Linked accounts</Link>\n\t\t\t\t\t\t\t</TabsTrigger>\n\t\t\t\t\t\t</TabsList>\n\t\t\t\t\t</Tabs>\n\t\t\t\t\t<ThemeSwitcher>\n\t\t\t\t\t\t<Button variant='ghost'>\n\t\t\t\t\t\t\t<span>Theme</span>\n\t\t\t\t\t\t\t<Icons.chevronDown />\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t</ThemeSwitcher>\n\t\t\t\t</div>\n\t\t\t\t{children}\n\t\t\t</div>\n\t\t</div>\n\t)\n}\n",
+			"content": "'use client'\n\nimport { Icons } from '@/components/icons'\nimport { Button } from '@/components/ui/base/c-button'\nimport { ThemeSwitcher } from '@/components/ui/base/theme-switcher'\nimport { LayoutProps } from '@/components/ui/base/utils'\nimport { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport Link from 'next/link'\nimport { usePathname } from 'next/navigation'\nimport { useState } from 'react'\n\nexport default function Layout({ children }: LayoutProps) {\n\tconst pathname = usePathname()\n\tconst [tab, setTab] = useState(pathname.split('/').pop() ?? 'dashboard')\n\n\treturn (\n\t\t<div className='min-h-screen bg-background relative flex flex-col sm:flex-row sm:items-center sm:justify-center p-4 sm:p-8'>\n\t\t\t<div className='w-full sm:max-w-md grid gap-2'>\n\t\t\t\t<div className='flex gap-4 justify-between'>\n\t\t\t\t\t<Tabs value={tab} onValueChange={setTab}>\n\t\t\t\t\t\t<TabsList>\n\t\t\t\t\t\t\t<TabsTrigger asChild value='dashboard'>\n\t\t\t\t\t\t\t\t<Link href='/dashboard'>Account</Link>\n\t\t\t\t\t\t\t</TabsTrigger>\n\t\t\t\t\t\t\t<TabsTrigger asChild value='accounts'>\n\t\t\t\t\t\t\t\t<Link href='/accounts'>Linked accounts</Link>\n\t\t\t\t\t\t\t</TabsTrigger>\n\t\t\t\t\t\t</TabsList>\n\t\t\t\t\t</Tabs>\n\t\t\t\t\t<ThemeSwitcher>\n\t\t\t\t\t\t<Button variant='ghost'>\n\t\t\t\t\t\t\t<span>Theme</span>\n\t\t\t\t\t\t\t<Icons.chevronDown />\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t</ThemeSwitcher>\n\t\t\t\t</div>\n\t\t\t\t{children}\n\t\t\t</div>\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:example",
 			"target": "./app/(protected)/layout.tsx"
 		},
