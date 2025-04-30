@@ -2,7 +2,7 @@
 	"name": "db",
 	"type": "registry:block",
 	"dependencies": ["@prisma/client", "@t3-oss/env-nextjs", "zod"],
-	"devDependencies": ["prisma"],
+	"devDependencies": ["prisma", "tsx"],
 	"registryDependencies": [],
 	"files": [
 		{
@@ -29,21 +29,21 @@
 		},
 		{
 			"path": "./prisma/schema/schema.prisma",
-			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"prismaSchemaFolder\"]\n}\n",
+			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n}\n",
 			"type": "registry:example",
 			"target": "~/prisma/schema/schema.prisma"
 		},
 		{
-			"path": "./prisma/schema/todos.prisma",
+			"path": "./prisma/schema/todo.prisma",
 			"content": "enum TodoStatus {\n    NEW\n    IN_PROGRESS\n    COMPLETED\n}\n\nmodel Todo {\n    id         String   @id @default(cuid())\n    created_at DateTime @default(now())\n    updated_at DateTime @updatedAt\n\n    title  String\n    desc   String?\n    status TodoStatus @default(NEW)\n}\n",
 			"type": "registry:example",
-			"target": "~/prisma/schema/todos.prisma"
+			"target": "~/prisma/schema/todo.prisma"
 		},
 		{
-			"path": "./prisma.config.ts",
-			"content": "import path from 'node:path'\nimport type { PrismaConfig } from 'prisma'\n\nexport default {\n\tearlyAccess: true,\n\tschema: path.join('prisma', 'schema'),\n} satisfies PrismaConfig\n",
+			"path": "./scripts/config-db.ts",
+			"content": "import { readFileSync, writeFileSync } from 'fs'\nimport { join } from 'path'\n\nexport function main() {\n\ttry {\n\t\t// Read the current package.json\n\t\tconst packageJsonPath = join(process.cwd(), 'package.json')\n\t\tconst packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))\n\n\t\t// Add or update the prisma configuration\n\t\tpackageJson.prisma = { schema: './prisma/schema' }\n\n\t\t// Add or update the postinstall script\n\t\tpackageJson.scripts = {\n\t\t\t...packageJson.scripts,\n\t\t\tpostinstall: 'npx prisma generate',\n\t\t}\n\n\t\t// Write the updated package.json back to the file\n\t\twriteFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))\n\n\t\tconsole.log('Successfully added Prisma configuration and postinstall script to package.json')\n\t} catch (error) {\n\t\tconsole.error('Error updating package.json:', error)\n\t\tprocess.exit(1)\n\t}\n}\n\nmain()\n",
 			"type": "registry:example",
-			"target": "~/prisma.config.ts"
+			"target": "~/scripts/config-db.ts"
 		}
 	],
 	"tailwind": {},
