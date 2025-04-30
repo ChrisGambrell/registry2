@@ -29,7 +29,7 @@
 		},
 		{
 			"path": "./prisma/schema/schema.prisma",
-			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"multiSchema\"]\n}\n",
+			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"prismaSchemaFolder\"]\n}\n",
 			"type": "registry:example",
 			"target": "~/prisma/schema/schema.prisma"
 		},
@@ -38,6 +38,12 @@
 			"content": "enum TodoStatus {\n    NEW\n    IN_PROGRESS\n    COMPLETED\n}\n\nmodel Todo {\n    id         String   @id @default(cuid())\n    created_at DateTime @default(now())\n    updated_at DateTime @updatedAt\n\n    title  String\n    desc   String?\n    status TodoStatus @default(NEW)\n}\n",
 			"type": "registry:example",
 			"target": "~/prisma/schema/todos.prisma"
+		},
+		{
+			"path": "./prisma.config.ts",
+			"content": "import path from 'node:path'\nimport type { PrismaConfig } from 'prisma'\n\nexport default {\n\tearlyAccess: true,\n\tschema: path.join('prisma', 'schema'),\n} satisfies PrismaConfig\n",
+			"type": "registry:example",
+			"target": "~/prisma.config.ts"
 		}
 	],
 	"tailwind": {},
