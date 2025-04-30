@@ -12,7 +12,7 @@ export function FormInput({
 	name,
 	state,
 	...props
-}: React.ComponentProps<'input'> & { clearOnError?: boolean; label: React.ReactNode | string; state?: ActionState }) {
+}: React.ComponentProps<'input'> & { clearOnError?: boolean; label?: React.ReactNode | string; state?: ActionState }) {
 	const id = String(name ?? _id)
 	const value = clearOnError ? '' : state?.values?.[id] ?? ''
 	const error = state?.fieldErrors?.[id]?.[0]
