@@ -1,19 +1,49 @@
 {
 	"name": "ai",
 	"type": "registry:block",
-	"dependencies": ["@ai-sdk/openai", "@radix-ui/react-slot", "@t3-oss/env-nextjs", "ai", "zod"],
+	"dependencies": [
+		"@ai-sdk/openai",
+		"@radix-ui/react-alert-dialog",
+		"@radix-ui/react-checkbox",
+		"@radix-ui/react-dialog",
+		"@radix-ui/react-label",
+		"@radix-ui/react-popover",
+		"@radix-ui/react-select",
+		"@radix-ui/react-slot",
+		"@t3-oss/env-nextjs",
+		"ai",
+		"cmdk",
+		"next-themes",
+		"openai",
+		"sonner",
+		"zod"
+	],
 	"devDependencies": [],
-	"registryDependencies": ["button", "card", "https://r.gambrell.dev"],
+	"registryDependencies": [
+		"alert-dialog",
+		"button",
+		"card",
+		"checkbox",
+		"command",
+		"dialog",
+		"input",
+		"label",
+		"popover",
+		"select",
+		"sonner",
+		"textarea",
+		"https://r.gambrell.dev"
+	],
 	"files": [
 		{
 			"path": "./actions/ai.ts",
-			"content": "'use server'\n\nimport { openai } from '@ai-sdk/openai'\nimport { experimental_generateImage, generateObject } from 'ai'\nimport { z } from 'zod'\n\nexport async function generateStructuredRecipe() {\n\tconst { object } = await generateObject({\n\t\tmodel: openai('gpt-4.1-nano'),\n\t\tschema: z.object({\n\t\t\trecipe: z.object({\n\t\t\t\tname: z.string(),\n\t\t\t\tingredients: z.array(z.object({ name: z.string(), amount: z.string() })),\n\t\t\t\tsteps: z.array(z.string()),\n\t\t\t}),\n\t\t}),\n\t\tprompt: 'Generate a lasagna recipe.',\n\t})\n\n\treturn object.recipe\n}\n\nexport async function generateRecipeImage() {\n\tconst { image } = await experimental_generateImage({\n\t\tmodel: openai.image('gpt-image-1'),\n\t\tprompt: 'A huge tray of lasagna',\n\t})\n\n\treturn image.base64\n}\n",
+			"content": "'use server'\n\nimport { handleFormAction } from '@/components/ui/base/action'\nimport { openai } from '@ai-sdk/openai'\nimport { experimental_generateImage, generateObject } from 'ai'\nimport { revalidatePath } from 'next/cache'\nimport OpenAI, { toFile } from 'openai'\nimport { z } from 'zod'\n\nexport async function generateStructuredRecipe() {\n\tconst { object } = await generateObject({\n\t\tmodel: openai('gpt-4.1-nano'),\n\t\tschema: z.object({\n\t\t\trecipe: z.object({\n\t\t\t\tname: z.string(),\n\t\t\t\tingredients: z.array(z.object({ name: z.string(), amount: z.string() })),\n\t\t\t\tsteps: z.array(z.string()),\n\t\t\t}),\n\t\t}),\n\t\tprompt: 'Generate a lasagna recipe.',\n\t})\n\n\treturn object.recipe\n}\n\nexport async function generateRecipeImage() {\n\tconst { image } = await experimental_generateImage({\n\t\tmodel: openai.image('gpt-image-1'),\n\t\tprompt: 'A huge tray of lasagna',\n\t})\n\n\treturn image.base64\n}\n\nexport const generateImageWithReference = async (_: unknown, formData: FormData) =>\n\thandleFormAction(\n\t\tformData,\n\t\tz.object({ file: z.instanceof(File).refine((file) => file.size > 0, 'File must be non-empty') }),\n\t\tasync ({ file }) => {\n\t\t\tconst client = new OpenAI()\n\t\t\tconst image = await toFile(file, null, { type: 'image/png' })\n\n\t\t\tawait client.images.edit({\n\t\t\t\tmodel: 'gpt-image-1',\n\t\t\t\timage,\n\t\t\t\tprompt: 'Create a lovely gift basket with this item in it',\n\t\t\t})\n\n\t\t\trevalidatePath('/example')\n\n\t\t\t// TODO: Save the image to a file and store in s3\n\t\t\t// const image_base64 = rsp.data?.[0].b64_json\n\t\t\t// const image_bytes = Buffer.from(image_base64??'', 'base64')\n\t\t\t// fs.writeFileSync('basket.png', image_bytes)\n\t\t}\n\t)\n",
 			"type": "registry:example",
 			"target": "~/actions/ai.ts"
 		},
 		{
 			"path": "./app/example/page.tsx",
-			"content": "'use client'\n\nimport { generateRecipeImage, generateStructuredRecipe } from '@/actions/ai'\nimport { ActionButton } from '@/components/ui/base/action-button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { useActionState } from 'react'\n\nexport default function ExamplePage() {\n\tconst [recipe, generateRecipe] = useActionState(generateStructuredRecipe, null)\n\tconst [image, generateImage] = useActionState(generateRecipeImage, null)\n\n\treturn (\n\t\t<div className='max-w-xl mx-auto mt-4 grid gap-4'>\n\t\t\t<Card>\n\t\t\t\t<CardContent>\n\t\t\t\t\t<form className='flex gap-2'>\n\t\t\t\t\t\t<ActionButton formAction={generateRecipe} className='flex-1'>\n\t\t\t\t\t\t\tGenerate recipe\n\t\t\t\t\t\t</ActionButton>\n\t\t\t\t\t\t<ActionButton formAction={generateImage} className='flex-1' variant='outline'>\n\t\t\t\t\t\t\tGenerate image\n\t\t\t\t\t\t</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</CardContent>\n\t\t\t</Card>\n\t\t\t{recipe && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardHeader>\n\t\t\t\t\t\t<CardTitle>{recipe.name}</CardTitle>\n\t\t\t\t\t</CardHeader>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ul className='list-disc list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.ingredients.map((i, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>\n\t\t\t\t\t\t\t\t\t<span className=''>{i.amount}</span> {i.name}\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</CardContent>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ol className='list-decimal list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.steps.map((s, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>{s}</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ol>\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t\t{image && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<img src={`data:image/png;base64, ${image}`} alt='Generated image' />\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t</div>\n\t)\n}\n",
+			"content": "'use client'\n\nimport { generateImageWithReference, generateRecipeImage, generateStructuredRecipe } from '@/actions/ai'\nimport { ActionButton } from '@/components/ui/base/action-button'\nimport { FormInput } from '@/components/ui/base/form-input'\nimport { useForm } from '@/components/ui/base/use-form'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { useActionState } from 'react'\nimport { z } from 'zod'\n\nexport default function ExamplePage() {\n\tconst [recipe, generateRecipe] = useActionState(generateStructuredRecipe, null)\n\tconst [image, generateImage] = useActionState(generateRecipeImage, null)\n\tconst [state, generateWithReference] = useForm(\n\t\tgenerateImageWithReference,\n\t\tz.object({\n\t\t\tfile: z.instanceof(File).refine((file) => file.size > 0, 'File must be non-empty'),\n\t\t})\n\t)\n\n\tconsole.log('state', state)\n\n\treturn (\n\t\t<div className='max-w-xl mx-auto mt-4 grid gap-4'>\n\t\t\t<Card>\n\t\t\t\t<CardContent>\n\t\t\t\t\t<form className='flex gap-2'>\n\t\t\t\t\t\t<ActionButton formAction={generateRecipe} className='flex-1'>\n\t\t\t\t\t\t\tGenerate recipe\n\t\t\t\t\t\t</ActionButton>\n\t\t\t\t\t\t<ActionButton formAction={generateImage} className='flex-1' variant='outline'>\n\t\t\t\t\t\t\tGenerate image\n\t\t\t\t\t\t</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</CardContent>\n\t\t\t\t<CardContent>\n\t\t\t\t\t<form action={generateWithReference} className='grid gap-2'>\n\t\t\t\t\t\t<FormInput name='file' type='file' multiple accept='image/*' state={state} />\n\t\t\t\t\t\t<ActionButton>Generate image with reference</ActionButton>\n\t\t\t\t\t</form>\n\t\t\t\t</CardContent>\n\t\t\t</Card>\n\t\t\t{recipe && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardHeader>\n\t\t\t\t\t\t<CardTitle>{recipe.name}</CardTitle>\n\t\t\t\t\t</CardHeader>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ul className='list-disc list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.ingredients.map((i, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>\n\t\t\t\t\t\t\t\t\t<span className=''>{i.amount}</span> {i.name}\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</CardContent>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ol className='list-decimal list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.steps.map((s, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>{s}</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ol>\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t\t{image && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<img src={`data:image/png;base64, ${image}`} alt='Generated image' />\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t</div>\n\t)\n}\n",
 			"type": "registry:example",
 			"target": "./app/example/page.tsx"
 		},
