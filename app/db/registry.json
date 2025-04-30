@@ -13,7 +13,7 @@
 		},
 		{
 			"path": "./example.env",
-			"content": "DATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\nNEXT_PUBLIC_APP_URL=\"http://localhost:3000\"",
+			"content": "DATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"",
 			"type": "registry:example",
 			"target": "~/example.env"
 		},
@@ -24,7 +24,7 @@
 		},
 		{
 			"path": "./lib/env.ts",
-			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport { z } from 'zod'\n\nexport const env = createEnv({\n\tserver: { DATABASE_URL: z.string().url() },\n\tclient: { NEXT_PUBLIC_APP_URL: z.string().url() },\n\truntimeEnv: {\n\t\tDATABASE_URL: process.env.DATABASE_URL,\n\t\tNEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,\n\t},\n})\n",
+			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport { z } from 'zod'\n\nexport const env = createEnv({\n\tserver: { DATABASE_URL: z.string().url() },\n\tclient: { NEXT_PUBLIC_SITE_URL: z.string().url() },\n\truntimeEnv: {\n\t\tDATABASE_URL: process.env.DATABASE_URL,\n\t\tNEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,\n\t},\n})\n",
 			"type": "registry:lib"
 		},
 		{
