@@ -10,7 +10,7 @@
 		"uuid",
 		"zod"
 	],
-	"devDependencies": [],
+	"devDependencies": ["tsx"],
 	"registryDependencies": ["button", "card", "input"],
 	"files": [
 		{
