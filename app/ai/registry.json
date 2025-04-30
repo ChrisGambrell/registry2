@@ -1,0 +1,35 @@
+{
+	"name": "ai",
+	"type": "registry:block",
+	"dependencies": ["@ai-sdk/openai", "@radix-ui/react-slot", "@t3-oss/env-nextjs", "ai", "zod"],
+	"devDependencies": [],
+	"registryDependencies": ["button", "card"],
+	"files": [
+		{
+			"path": "./actions/ai.ts",
+			"content": "'use server'\n\nimport { openai } from '@ai-sdk/openai'\nimport { experimental_generateImage, generateObject } from 'ai'\nimport { z } from 'zod'\n\nexport async function generateStructuredRecipe() {\n\tconst { object } = await generateObject({\n\t\tmodel: openai('gpt-4.1-nano'),\n\t\tschema: z.object({\n\t\t\trecipe: z.object({\n\t\t\t\tname: z.string(),\n\t\t\t\tingredients: z.array(z.object({ name: z.string(), amount: z.string() })),\n\t\t\t\tsteps: z.array(z.string()),\n\t\t\t}),\n\t\t}),\n\t\tprompt: 'Generate a lasagna recipe.',\n\t})\n\n\treturn object.recipe\n}\n\nexport async function generateRecipeImage() {\n\tconst { image } = await experimental_generateImage({\n\t\tmodel: openai.image('gpt-image-1'),\n\t\tprompt: 'A huge tray of lasagna',\n\t})\n\n\treturn image.base64\n}\n",
+			"type": "registry:example",
+			"target": "~/actions/ai.ts"
+		},
+		{
+			"path": "./app/example/page.tsx",
+			"content": "'use client'\n\nimport { generateRecipeImage, generateStructuredRecipe } from '@/actions/ai'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { useActionState } from 'react'\n\nexport default function ExamplePage() {\n\tconst [recipe, generateRecipe] = useActionState(generateStructuredRecipe, null)\n\tconst [image, generateImage] = useActionState(generateRecipeImage, null)\n\n\treturn (\n\t\t<div className='max-w-xl mx-auto mt-4 grid gap-4'>\n\t\t\t<Card>\n\t\t\t\t<CardContent>\n\t\t\t\t\t<form className='flex gap-2'>\n\t\t\t\t\t\t<Button formAction={generateRecipe} className='flex-1'>\n\t\t\t\t\t\t\tGenerate recipe\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t<Button formAction={generateImage} className='flex-1' variant='outline'>\n\t\t\t\t\t\t\tGenerate image\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t</form>\n\t\t\t\t</CardContent>\n\t\t\t</Card>\n\t\t\t{recipe && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardHeader>\n\t\t\t\t\t\t<CardTitle>{recipe.name}</CardTitle>\n\t\t\t\t\t</CardHeader>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ul className='list-disc list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.ingredients.map((i, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>\n\t\t\t\t\t\t\t\t\t<span className=''>{i.amount}</span> {i.name}\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</CardContent>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<ol className='list-decimal list-outside ml-4'>\n\t\t\t\t\t\t\t{recipe.steps.map((s, index) => (\n\t\t\t\t\t\t\t\t<li key={index}>{s}</li>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ol>\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t\t{image && (\n\t\t\t\t<Card>\n\t\t\t\t\t<CardContent>\n\t\t\t\t\t\t<img src={`data:image/png;base64, ${image}`} alt='Generated image' />\n\t\t\t\t\t</CardContent>\n\t\t\t\t</Card>\n\t\t\t)}\n\t\t</div>\n\t)\n}\n",
+			"type": "registry:example",
+			"target": "./app/example/page.tsx"
+		},
+		{
+			"path": "./example.env",
+			"content": "# https://platform.openai.com/api-keys\nOPENAI_API_KEY=\"sk-proj-1234567890\"\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"\n",
+			"type": "registry:example",
+			"target": "~/example.env"
+		},
+		{
+			"path": "./lib/env.ts",
+			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport { z } from 'zod'\n\nexport const env = createEnv({\n\tserver: { OPENAI_API_KEY: z.string().min(1) },\n\tclient: { NEXT_PUBLIC_SITE_URL: z.string().url() },\n\truntimeEnv: {\n\t\tOPENAI_API_KEY: process.env.OPENAI_API_KEY,\n\t\tNEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,\n\t},\n})\n",
+			"type": "registry:lib"
+		}
+	],
+	"tailwind": {},
+	"cssVars": {},
+	"meta": {}
+}
