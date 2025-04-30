@@ -28,10 +28,16 @@
 			"type": "registry:lib"
 		},
 		{
-			"path": "./prisma/schema.prisma",
-			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n}\n\nenum TodoStatus {\n  NEW\n  IN_PROGRESS\n  COMPLETED\n}\n\nmodel Todo {\n  id         String   @id @default(cuid())\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n\n  title  String\n  desc   String?\n  status TodoStatus @default(NEW)\n}\n",
+			"path": "./prisma/schema/schema.prisma",
+			"content": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"multiSchema\"]\n}\n",
 			"type": "registry:example",
-			"target": "~/prisma/schema.prisma"
+			"target": "~/prisma/schema/schema.prisma"
+		},
+		{
+			"path": "./prisma/schema/todos.prisma",
+			"content": "enum TodoStatus {\n    NEW\n    IN_PROGRESS\n    COMPLETED\n}\n\nmodel Todo {\n    id         String   @id @default(cuid())\n    created_at DateTime @default(now())\n    updated_at DateTime @updatedAt\n\n    title  String\n    desc   String?\n    status TodoStatus @default(NEW)\n}\n",
+			"type": "registry:example",
+			"target": "~/prisma/schema/todos.prisma"
 		}
 	],
 	"tailwind": {},
