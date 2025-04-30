@@ -220,5 +220,6 @@
 	],
 	"tailwind": {},
 	"cssVars": {},
-	"meta": {}
+	"meta": {},
+	"docs": "Remember to run `npx tsx scripts/config-db.ts` to add the prisma configuration and postinstall script to package.json"
 }
