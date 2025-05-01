@@ -285,5 +285,5 @@
 	"tailwind": {},
 	"cssVars": {},
 	"meta": {},
-	"docs": "Remember to run `npx tsx scripts/config-db.ts && npx tsx scripts/config-files.ts && npx tsx scripts/config-payments.ts && npx prisma generate && npx prisma migrate dev` to configure the database, S3 storage, and Stripe."
+	"docs": "Remember to run `npx tsx scripts/config-db.ts && npx tsx scripts/config-files.ts && npx prisma generate && npx prisma migrate dev && npx tsx scripts/config-payments.ts` to configure the database, S3 storage, and Stripe."
 }
