@@ -74,7 +74,7 @@
 		},
 		{
 			"path": "./example.env",
-			"content": "# https://console.aws.amazon.com/console\nAWS_ACCESS_KEY_ID=\"\"\nAWS_SECRET_ACCESS_KEY=\"\"\nAWS_REGION=\"us-east-1\"\nAWS_PUBLIC_BUCKET_NAME=\"public\"\nAWS_PRIVATE_BUCKET_NAME=\"private\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"\n",
+			"content": "# https://console.aws.amazon.com/iam/home\nAWS_ACCESS_KEY_ID=\"\"\nAWS_SECRET_ACCESS_KEY=\"\"\nAWS_REGION=\"us-east-1\"\nAWS_PUBLIC_BUCKET_NAME=\"public\"\nAWS_PRIVATE_BUCKET_NAME=\"private\"\n\nDATABASE_URL=\"postgresql://postgres:password@localhost:5432/postgres?schema=public\"\n\nNEXT_PUBLIC_SITE_URL=\"http://localhost:3000\"\n",
 			"type": "registry:example",
 			"target": "~/example.env"
 		},
