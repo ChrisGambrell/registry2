@@ -14,13 +14,12 @@
 		"@radix-ui/react-slot",
 		"@t3-oss/env-nextjs",
 		"cmdk",
-		"dotenv",
 		"next-themes",
 		"sonner",
 		"uuid",
 		"zod"
 	],
-	"devDependencies": ["prisma", "tsx"],
+	"devDependencies": ["dotenv", "prisma", "tsx"],
 	"registryDependencies": [
 		"alert-dialog",
 		"button",
@@ -86,7 +85,7 @@
 		},
 		{
 			"path": "./lib/env.ts",
-			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport dotenv from 'dotenv'\nimport { z } from 'zod'\n\ndotenv.config()\n\nexport const env = createEnv({\n\tserver: {\n\t\tAWS_ACCESS_KEY_ID: z.string().min(1),\n\t\tAWS_SECRET_ACCESS_KEY: z.string().min(1),\n\t\tAWS_REGION: z.string().min(1),\n\t\tAWS_PUBLIC_BUCKET_NAME: z.string().min(1),\n\t\tAWS_PRIVATE_BUCKET_NAME: z.string().min(1),\n\n\t\tDATABASE_URL: z.string().url(),\n\t},\n\tclient: { NEXT_PUBLIC_SITE_URL: z.string().url() },\n\truntimeEnv: {\n\t\tAWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,\n\t\tAWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,\n\t\tAWS_REGION: process.env.AWS_REGION,\n\t\tAWS_PUBLIC_BUCKET_NAME: process.env.AWS_PUBLIC_BUCKET_NAME,\n\t\tAWS_PRIVATE_BUCKET_NAME: process.env.AWS_PRIVATE_BUCKET_NAME,\n\n\t\tDATABASE_URL: process.env.DATABASE_URL,\n\n\t\tNEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,\n\t},\n})\n",
+			"content": "import { createEnv } from '@t3-oss/env-nextjs'\nimport { z } from 'zod'\n\nexport const env = createEnv({\n\tserver: {\n\t\tAWS_ACCESS_KEY_ID: z.string().min(1),\n\t\tAWS_SECRET_ACCESS_KEY: z.string().min(1),\n\t\tAWS_REGION: z.string().min(1),\n\t\tAWS_PUBLIC_BUCKET_NAME: z.string().min(1),\n\t\tAWS_PRIVATE_BUCKET_NAME: z.string().min(1),\n\n\t\tDATABASE_URL: z.string().url(),\n\t},\n\tclient: { NEXT_PUBLIC_SITE_URL: z.string().url() },\n\truntimeEnv: {\n\t\tAWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,\n\t\tAWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,\n\t\tAWS_REGION: process.env.AWS_REGION,\n\t\tAWS_PUBLIC_BUCKET_NAME: process.env.AWS_PUBLIC_BUCKET_NAME,\n\t\tAWS_PRIVATE_BUCKET_NAME: process.env.AWS_PRIVATE_BUCKET_NAME,\n\n\t\tDATABASE_URL: process.env.DATABASE_URL,\n\n\t\tNEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,\n\t},\n})\n",
 			"type": "registry:lib"
 		},
 		{
@@ -126,7 +125,7 @@
 		},
 		{
 			"path": "./scripts/config-files.ts",
-			"content": "import { env } from '@/lib/env'\nimport { s3 } from '@/lib/s3'\nimport { CreateBucketCommand, PutBucketCorsCommand, PutBucketPolicyCommand, PutPublicAccessBlockCommand } from '@aws-sdk/client-s3'\n\nexport async function main() {\n\tconst publicBucket = env.AWS_PUBLIC_BUCKET_NAME\n\tconst privateBucket = env.AWS_PRIVATE_BUCKET_NAME\n\n\t// await s3.send(new DeleteBucketCommand({ Bucket: publicBucket }))\n\t// await s3.send(new DeleteBucketCommand({ Bucket: privateBucket }))\n\n\tawait s3.send(new CreateBucketCommand({ Bucket: publicBucket }))\n\tawait s3.send(new CreateBucketCommand({ Bucket: privateBucket }))\n\n\tawait s3.send(\n\t\tnew PutPublicAccessBlockCommand({\n\t\t\tBucket: publicBucket,\n\t\t\tPublicAccessBlockConfiguration: {\n\t\t\t\tBlockPublicAcls: false,\n\t\t\t\tIgnorePublicAcls: false,\n\t\t\t\tBlockPublicPolicy: false,\n\t\t\t\tRestrictPublicBuckets: false,\n\t\t\t},\n\t\t})\n\t)\n\n\tawait s3.send(\n\t\tnew PutBucketPolicyCommand({\n\t\t\tBucket: publicBucket,\n\t\t\tPolicy: JSON.stringify({\n\t\t\t\tVersion: '2012-10-17',\n\t\t\t\tStatement: [\n\t\t\t\t\t{\n\t\t\t\t\t\tSid: 'PublicReadAvatars',\n\t\t\t\t\t\tEffect: 'Allow',\n\t\t\t\t\t\tPrincipal: '*',\n\t\t\t\t\t\tAction: 's3:GetObject',\n\t\t\t\t\t\tResource: `arn:aws:s3:::${publicBucket}/*`,\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t}),\n\t\t})\n\t)\n\n\tawait s3.send(\n\t\tnew PutBucketCorsCommand({\n\t\t\tBucket: privateBucket,\n\t\t\tCORSConfiguration: {\n\t\t\t\tCORSRules: [\n\t\t\t\t\t{\n\t\t\t\t\t\tAllowedOrigins: [\n\t\t\t\t\t\t\t// TODO: Add production url\n\t\t\t\t\t\t\tenv.NEXT_PUBLIC_SITE_URL,\n\t\t\t\t\t\t],\n\t\t\t\t\t\tAllowedMethods: ['GET', 'PUT', 'POST'],\n\t\t\t\t\t\tAllowedHeaders: ['*'],\n\t\t\t\t\t\tExposeHeaders: ['ETag'],\n\t\t\t\t\t\tMaxAgeSeconds: 3000,\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t},\n\t\t})\n\t)\n}\n\nmain()\n",
+			"content": "import { s3 } from '@/lib/s3'\nimport { CreateBucketCommand, PutBucketCorsCommand, PutBucketPolicyCommand, PutPublicAccessBlockCommand } from '@aws-sdk/client-s3'\nimport dotenv from 'dotenv'\n\ndotenv.config()\nif (\n\t!process.env.AWS_ACCESS_KEY_ID ||\n\t!process.env.AWS_SECRET_ACCESS_KEY ||\n\t!process.env.AWS_REGION ||\n\t!process.env.AWS_PUBLIC_BUCKET_NAME ||\n\t!process.env.AWS_PRIVATE_BUCKET_NAME ||\n\t!process.env.NEXT_PUBLIC_SITE_URL\n)\n\tthrow new Error('Missing environment variables')\n\nexport async function main() {\n\tconst publicBucket = process.env.AWS_PUBLIC_BUCKET_NAME!\n\tconst privateBucket = process.env.AWS_PRIVATE_BUCKET_NAME!\n\n\t// await s3.send(new DeleteBucketCommand({ Bucket: publicBucket }))\n\t// await s3.send(new DeleteBucketCommand({ Bucket: privateBucket }))\n\n\tawait s3.send(new CreateBucketCommand({ Bucket: publicBucket }))\n\tawait s3.send(new CreateBucketCommand({ Bucket: privateBucket }))\n\n\tawait s3.send(\n\t\tnew PutPublicAccessBlockCommand({\n\t\t\tBucket: publicBucket,\n\t\t\tPublicAccessBlockConfiguration: {\n\t\t\t\tBlockPublicAcls: false,\n\t\t\t\tIgnorePublicAcls: false,\n\t\t\t\tBlockPublicPolicy: false,\n\t\t\t\tRestrictPublicBuckets: false,\n\t\t\t},\n\t\t})\n\t)\n\n\tawait s3.send(\n\t\tnew PutBucketPolicyCommand({\n\t\t\tBucket: publicBucket,\n\t\t\tPolicy: JSON.stringify({\n\t\t\t\tVersion: '2012-10-17',\n\t\t\t\tStatement: [\n\t\t\t\t\t{\n\t\t\t\t\t\tSid: 'PublicReadAvatars',\n\t\t\t\t\t\tEffect: 'Allow',\n\t\t\t\t\t\tPrincipal: '*',\n\t\t\t\t\t\tAction: 's3:GetObject',\n\t\t\t\t\t\tResource: `arn:aws:s3:::${publicBucket}/*`,\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t}),\n\t\t})\n\t)\n\n\tawait s3.send(\n\t\tnew PutBucketCorsCommand({\n\t\t\tBucket: privateBucket,\n\t\t\tCORSConfiguration: {\n\t\t\t\tCORSRules: [\n\t\t\t\t\t{\n\t\t\t\t\t\tAllowedOrigins: [\n\t\t\t\t\t\t\t// TODO: Add production url\n\t\t\t\t\t\t\tprocess.env.NEXT_PUBLIC_SITE_URL!,\n\t\t\t\t\t\t],\n\t\t\t\t\t\tAllowedMethods: ['GET', 'PUT', 'POST'],\n\t\t\t\t\t\tAllowedHeaders: ['*'],\n\t\t\t\t\t\tExposeHeaders: ['ETag'],\n\t\t\t\t\t\tMaxAgeSeconds: 3000,\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t},\n\t\t})\n\t)\n}\n\nmain()\n",
 			"type": "registry:example",
 			"target": "~/scripts/config-files.ts"
 		},
@@ -140,5 +139,5 @@
 	"tailwind": {},
 	"cssVars": {},
 	"meta": {},
-	"docs": "Remember to run `npx tsx scripts/config-db.ts && npx tsx scripts/config-files.ts` to add the prisma configuration and scripts to package.json and setup S3 buckets"
+	"docs": "Remember to run `npx tsx scripts/config-db.ts && npx tsx scripts/config-files.ts && npx prisma generate && npx prisma migrate dev` to configure the database and S3 storage."
 }
