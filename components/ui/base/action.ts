@@ -16,6 +16,7 @@ export async function handleFormAction<T extends Record<string, unknown>>(
 	if (result?.fieldErrors || result?.globalError) {
 		return {
 			success: false,
+			successMessage: null,
 			fieldErrors: result.fieldErrors ?? {},
 			globalError: result.globalError ?? null,
 			values: Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,
@@ -24,6 +25,7 @@ export async function handleFormAction<T extends Record<string, unknown>>(
 
 	return {
 		success: true,
+		successMessage: result?.successMessage ?? null,
 		fieldErrors: {},
 		globalError: null,
 		values: {},

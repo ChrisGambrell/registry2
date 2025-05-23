@@ -7,6 +7,7 @@ export type LayoutProps = { children: React.ReactNode; params: Params }
 
 export type ActionResult<T> = {
 	success: boolean
+	successMessage: string | null
 	fieldErrors: Partial<Record<keyof T, string[]>>
 	globalError: string | null
 	values: Partial<Record<keyof T, string>>
@@ -18,9 +19,12 @@ export type ActionState = {
 	fieldErrors: Record<string, string[]>
 	globalError: string | null
 	success: boolean
+	successMessage: string | null
 }
 
 export type OnValidResult<T> = null | {
+	values?: Partial<Record<keyof T, string>>
+	successMessage?: string | null
 	globalError?: string
 	fieldErrors?: Partial<Record<keyof T, string[]>>
 }
@@ -36,11 +40,17 @@ export function validateFormData<T>(formData: FormData, schema: ZodSchema<T>) {
 		const fieldErrors = parsed.error.flatten().fieldErrors as Partial<Record<keyof T, string[]>>
 		return {
 			success: false,
+			successMessage: null,
 			fieldErrors,
 			globalError: null,
 			values: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,
 		}
 	}
 
-	return { success: true, data: parsed.data }
+	return {
+		success: true,
+		successMessage: null,
+		data: parsed.data,
+		values: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,
+	}
 }

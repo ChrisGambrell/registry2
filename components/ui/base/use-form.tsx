@@ -8,6 +8,7 @@ import { ActionResult, validateFormData } from './utils'
 export function useForm<T>(action: (_: unknown, formData: FormData) => Promise<ActionResult<T>>, schema?: ZodSchema) {
 	const [formState, formAction, formLoading] = useActionState(action, {
 		success: false,
+		successMessage: null,
 		fieldErrors: {},
 		globalError: null,
 		values: {},
