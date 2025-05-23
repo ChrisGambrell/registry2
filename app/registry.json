@@ -35,11 +35,6 @@
 			"type": "registry:ui"
 		},
 		{
-			"path": "./components/ui/base/action.ts",
-			"content": "'use server'\n\nimport { ZodSchema } from 'zod'\nimport { ActionResult, OnValidResult, validateFormData } from './utils'\n\nexport async function handleFormAction<T extends Record<string, unknown>>(\n\tformData: FormData,\n\tschema: ZodSchema<T>,\n\tonValid: (data: T) => Promise<OnValidResult<T> | void>\n): Promise<ActionResult<T>> {\n\tconst parsed = validateFormData(formData, schema) as ActionResult<T>\n\tif (!parsed.success) return parsed\n\n\tconst result = await onValid(parsed.data!)\n\n\tif (result?.fieldErrors || result?.globalError) {\n\t\treturn {\n\t\t\tsuccess: false,\n\t\t\tsuccessMessage: null,\n\t\t\tfieldErrors: result.fieldErrors ?? {},\n\t\t\tglobalError: result.globalError ?? null,\n\t\t\tvalues: Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, String(v ?? '')])) as Partial<Record<keyof T, string>>,\n\t\t}\n\t}\n\n\treturn {\n\t\tsuccess: true,\n\t\tsuccessMessage: result?.successMessage ?? null,\n\t\tfieldErrors: {},\n\t\tglobalError: null,\n\t\tvalues: {},\n\t}\n}\n",
-			"type": "registry:ui"
-		},
-		{
 			"path": "./components/ui/base/c-button.tsx",
 			"content": "import { cn } from '@/lib/utils'\nimport { VariantProps } from 'class-variance-authority'\nimport { Button as ButtonBase, buttonVariants } from '../button'\n\nexport type ButtonProps = React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }\n\nexport function Button({ className, ...props }: ButtonProps) {\n\treturn <ButtonBase className={cn('cursor-pointer', className)} {...props} />\n}\n",
 			"type": "registry:ui"
