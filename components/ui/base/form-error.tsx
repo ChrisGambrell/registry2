@@ -5,7 +5,12 @@ import { useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
 
-export function FormError({ hidden = false, value }: { hidden?: boolean; value: string[] | undefined }) {
+interface FormErrorProps {
+	hidden?: boolean
+	value: string[] | undefined
+}
+
+export function FormError({ hidden = false, value }: FormErrorProps) {
 	const { pending } = useFormStatus()
 
 	useEffect(() => {

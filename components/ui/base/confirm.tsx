@@ -13,19 +13,15 @@ import {
 } from '../alert-dialog'
 import { ActionButton } from './action-button'
 
-export function Confirm({
-	action: _action,
-	children,
-	desc,
-	title,
-	variant = 'default',
-}: {
+interface ConfirmProps {
 	action: () => Promise<unknown>
 	children: ReactNode
 	desc: string
 	title: string
 	variant?: 'default' | 'destructive'
-}) {
+}
+
+export function Confirm({ action: _action, children, desc, title, variant = 'default' }: ConfirmProps) {
 	const [open, setOpen] = useState(false)
 	const [state, action] = useActionState(_action, null)
 

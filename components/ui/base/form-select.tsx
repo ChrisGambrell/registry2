@@ -8,22 +8,26 @@ import { Label } from '../label'
 import { FormError } from './form-error'
 import { ActionState } from './utils'
 
+interface FormSelectProps extends SelectProps {
+	className?: string
+	clearOnError?: boolean
+	desc?: React.ReactNode | string
+	label: React.ReactNode | string
+	options: ({ label: React.ReactNode; value: string } | string)[]
+	state?: ActionState
+}
+
 export function FormSelect({
 	className,
 	clearOnError = false,
 	defaultValue,
+	desc,
 	label,
 	name,
 	options,
 	state,
 	...props
-}: SelectProps & {
-	className?: string
-	clearOnError?: boolean
-	label: React.ReactNode | string
-	options: ({ label: React.ReactNode; value: string } | string)[]
-	state?: ActionState
-}) {
+}: FormSelectProps) {
 	const id = name ?? ''
 	// TODO: Use defaultValue in all form components?
 	const _value = clearOnError ? '' : state?.values?.[id] ?? defaultValue ?? ''
@@ -38,6 +42,7 @@ export function FormSelect({
 	return (
 		<div className={cn('grid gap-2 h-fit', className)}>
 			{label && (typeof label === 'string' ? <Label htmlFor={id}>{label}</Label> : label)}
+			{desc && (typeof desc === 'string' ? <p className='text-xs text-muted-foreground -mt-1'>{desc}</p> : desc)}
 			<Select value={value} onValueChange={setValue} {...props}>
 				<SelectTrigger className='w-full'>
 					<SelectValue placeholder='Select an option' />

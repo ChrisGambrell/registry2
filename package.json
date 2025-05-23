@@ -6,7 +6,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint",
+		"lint": "next lint ; npx knip ; npx tsc --noEmit",
 		"register": "npx shadcn-differ@latest . > ./app/registry.json"
 	},
 	"dependencies": {
@@ -38,6 +38,7 @@
 		"@types/react-dom": "^19.1.2",
 		"eslint": "^9.25.1",
 		"eslint-config-next": "15.2.4",
+		"knip": "^5.57.2",
 		"tailwindcss": "^4",
 		"typescript": "^5.8.3"
 	}

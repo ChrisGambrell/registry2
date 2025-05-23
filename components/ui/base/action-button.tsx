@@ -5,7 +5,11 @@ import { Loader2 } from 'lucide-react'
 import { useFormStatus } from 'react-dom'
 import { Button, ButtonProps } from './c-button'
 
-export function ActionButton({ children, className, disabled, loading, ...props }: ButtonProps & { loading?: boolean }) {
+export interface ActionButtonProps extends ButtonProps {
+	loading?: boolean
+}
+
+export function ActionButton({ children, className, disabled, loading, ...props }: ActionButtonProps) {
 	const { pending } = useFormStatus()
 
 	return (

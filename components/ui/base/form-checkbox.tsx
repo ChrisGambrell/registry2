@@ -4,14 +4,12 @@ import { Label } from '../label'
 import { FormError } from './form-error'
 import { ActionState } from './utils'
 
-export function FormCheckbox({
-	className,
-	id: _id,
-	label,
-	name,
-	state,
-	...props
-}: React.ComponentProps<typeof Checkbox> & { label: React.ReactNode | string; state?: ActionState }) {
+interface FormCheckboxProps extends React.ComponentProps<typeof Checkbox> {
+	label: React.ReactNode | string
+	state?: ActionState
+}
+
+export function FormCheckbox({ className, id: _id, label, name, state, ...props }: FormCheckboxProps) {
 	const id = String(name ?? _id)
 	const error = state?.fieldErrors?.[id]?.[0]
 
